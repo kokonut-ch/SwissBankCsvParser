@@ -1,7 +1,6 @@
 # Cornèrcard
 
-> **Provenance:** derived from publicly documented format samples. Not yet
-> verified against a real Cornèrcard export.
+> **Provenance:** verified against a real Cornèrcard export.
 
 Not to be confused with [`banks/Corner`](../Corner), which reads Cornèr Banca's
 *account* statements. Same group, different file, different profile.

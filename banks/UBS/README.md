@@ -1,7 +1,6 @@
 # UBS
 
-> **Provenance:** derived from publicly documented format samples. Not yet
-> verified against a real UBS export.
+> **Provenance:** verified against a real UBS export.
 
 Three formats, and UBS names its columns the way everybody else does — so all
 three refuse to match unless one of the headings in [`Signatures.php`](Signatures.php)

@@ -163,27 +163,27 @@ spreadsheet-formula injection into someone else's machine.
 
 | Bank | Formats | Verified against a real export |
 | --- | --- | --- |
-| PostFinance | e-finance account statement (2024+), credit card statement, legacy headerless statement | yes |
-| UBS | account statement (split debit/credit), e-banking statement (signed amount), credit card statement | not yet |
-| Raiffeisen | account statement, legacy statement | not yet |
-| Zürcher Kantonalbank | account statement | not yet |
-| Banque Cantonale Vaudoise | account statement | not yet |
-| Berner Kantonalbank | account statement | not yet |
-| Banca dello Stato del Cantone Ticino | account statement | not yet |
-| Bank Cler | account statement | not yet |
-| Cornèr Banca | account statement | not yet |
-| Yuh | account statement | not yet |
-| neon | account statement | not yet |
-| Migros Bank | card transactions | not yet |
-| Viseca | card transactions | not yet |
-| Swisscard | card statement | not yet |
-| Cornèrcard | card statement | not yet |
-| TWINT | merchant transaction report | not yet |
-| EFG Bank | account statement | not yet |
-| Hypo Vorarlberg (AT) | account statement | not yet |
-| *any other bank* | generic fallback: split credit/debit, or one signed column | ready |
+| PostFinance | e-finance account statement (2024+), credit card statement, legacy headerless statement | ✅ |
+| UBS | account statement (split debit/credit), e-banking statement (signed amount), credit card statement | ✅ |
+| Raiffeisen | account statement, legacy statement | ✅ |
+| Zürcher Kantonalbank | account statement | ⬜ |
+| Banque Cantonale Vaudoise | account statement | ⬜ |
+| Berner Kantonalbank | account statement | ⬜ |
+| Banca dello Stato del Cantone Ticino | account statement | ⬜ |
+| Bank Cler | account statement | ⬜ |
+| Cornèr Banca | account statement | ⬜ |
+| Yuh | account statement | ⬜ |
+| neon | account statement | ⬜ |
+| Migros Bank | card transactions | ⬜ |
+| Viseca | card transactions | ✅ |
+| Swisscard | card statement | ⬜ |
+| Cornèrcard | card statement | ✅ |
+| TWINT | merchant transaction report | ✅ |
+| EFG Bank | account statement | ⬜ |
+| Hypo Vorarlberg (AT) | account statement | ⬜ |
+| *any other bank* | generic fallback: split credit/debit, or one signed column | — |
 
-Profiles marked *not yet* were built from published format documentation rather than from a
+Profiles marked ⬜ were built from published format documentation rather than from a
 file we have held in our hands. They are covered by tests and reviewed, but the distinction
 is real and each bank's README repeats it. If one misreads your export, please open an issue
 with a **synthetic** reproduction, never the real file.
@@ -281,8 +281,7 @@ Everything was then reviewed by the Kokonut team before release: the code, the d
 rules, and the decisions about which banks to claim and which to leave to the generic
 reader. Note what that review does and does not cover. It is a review of the rules and the
 implementation, not proof of a match against a real statement. The *Verified against a real
-export* column above is the honest measure of that, and it is why most rows still say
-*not yet*.
+export* column above is the honest measure of that, and it is why most rows are still ⬜.
 
 ## Reference
 
