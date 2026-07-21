@@ -1,0 +1,4 @@
+IBAN;Auszugsnummer;Buchungsdatum;Valutadatum;Umsatzzeit;Zahlungsreferenz;Waehrung;Betrag;Buchungstext;Umsatztext;Name des Partners;Kategorie;Bestandskategorie
+AT611904300234573201;12;2026-12-31;2026-12-31;2026-12-31-21.35.45.616362;REF0001;EUR;-40,51;Abschluss;Kontoführung;;Sonstiges;Giro
+AT611904300234573201;12;2026-12-30;2026-12-30;2026-12-30-14.15.40.717674;REF0002;EUR;-52,32;SEPA-Zahlung;Rechnung 4471;Muster GmbH;Freizeit & Genuss;Giro
+AT611904300234573201;12;2026-12-28;2026-12-28;2026-12-28-09.02.11.100000;REF0003;EUR;1.240,55;Gutschrift;Zahlungseingang;Beispiel AG;Sonstiges;Giro

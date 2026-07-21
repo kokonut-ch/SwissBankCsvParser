@@ -1,0 +1,5 @@
+IBAN;Booked At;Text;Details;Credit/Debit Amount;Balance;Valuta Date
+CH9300762011623852957;2026-07-02 00:00:00.0;Zahlung Lieferant;Rechnung 4471;-1145.00;2078.76;2026-07-02 00:00:00.0
+;;Muster AG, 8000 Zürich;;;;
+CH9300762011623852957;2026-07-03 00:00:00.0;Zahlungseingang Kunde;;10.00;2088.76;2026-07-03 00:00:00.0
+CH9300762011623852957;2026-07-05 00:00:00.0;Prelevamento Bancomat;Bancomat Lugano;-40.70;2048.06;2026-07-05 00:00:00.0

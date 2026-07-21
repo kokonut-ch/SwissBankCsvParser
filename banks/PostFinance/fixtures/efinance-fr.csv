@@ -1,0 +1,14 @@
+Date de début:;01.01.2026;;;;;
+Date de fin:;31.03.2026;;;;;
+Catégorie:;Tous;;;;;
+Compte:;CH9300762011623852957;;;;;
+Monnaie:;CHF;;;;;
+;;;;;;
+Date;Type de transaction;Texte de notification;Crédit en CHF;Débit en CHF;Label;Catégorie
+;;;;;;
+10.03.2026;Enregistrement comptable;Paiement fournisseur;;-150.5;;Achats
+10.01.2026;Enregistrement comptable;Virement client;1'200.00;;;Ventes
+10.02.2026;Enregistrement comptable;Frais bancaires;;-25;;Finances
+;;;;;;
+Disclaimer:;;;;;;
+Le contenu du document a été généré à partir des paramètres de filtrage des clientes et des clients. PostFinance n'est pas responsable du contenu et de son exhaustivité.;;;;;;

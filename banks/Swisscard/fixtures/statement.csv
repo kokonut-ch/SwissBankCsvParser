@@ -1,0 +1,4 @@
+Transaction date;Description;Card number;Currency;Amount;Debit/Credit;Status;Registered Category
+13.11.2026;MUSTER SHOP LAUSANNE;XXXX 0001;CHF;189.00;Debit;Booked;Shopping
+16.11.2026;REMBOURSEMENT MUSTER SHOP;XXXX 0001;CHF;-40.00;Credit;Booked;Shopping
+18.11.2026;RESTAURANT DU PONT;XXXX 0001;CHF;56.50;Debit;Booked;Restaurants, Bar

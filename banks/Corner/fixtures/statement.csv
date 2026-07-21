@@ -1,0 +1,8 @@
+;Conto No.;123456/01 CHF;;;;
+;;;;;;
+;Elenco movimenti;;;;;
+;Conto No.;Data registrazione;Descrizione;Dettaglio;Data valuta;Importo
+;123456/01;31/12/2026;Pagamento Muster SA;;31/12/2026;-40.00
+;;;Spese;40,00- CHF;;
+;;;Ns.rif: 2026LI60101010101ABCDEFG;;;
+;123456/01;30/12/2026;Accredito cliente;;30/12/2026;236.50

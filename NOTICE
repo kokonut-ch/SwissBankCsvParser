@@ -1,0 +1,28 @@
+Swiss Bank CSV Parser
+Copyright (c) 2026 Kokonut
+
+This product is licensed under the MIT License (see LICENSE).
+
+--------------------------------------------------------------------------------
+
+This package is a PHP port of the Swiss bank import rules published by
+Banana.ch SA:
+
+    https://github.com/BananaAccounting/Switzerland
+    Licensed under the Apache License, Version 2.0
+    http://www.apache.org/licenses/LICENSE-2.0
+
+What was ported is the factual knowledge encoded in that work: which column
+headings each bank prints, in which languages, which way its amounts are signed,
+which date notations it uses, and where its quirks are. That knowledge is the
+result of years of contact with real exports, and Banana.ch published it openly.
+
+What was not taken is source code. This package is an independent implementation
+with a different architecture — a shared multilingual column vocabulary and
+declarative bank profiles, rather than one hand-written converter per bank — in a
+different language. No file, function or fragment was copied. Every behaviour was
+re-derived from the published scripts and covered by its own tests, and several
+were found to differ once checked.
+
+The acknowledgement is made because that work is where the knowledge came from,
+and because attribution is owed whether or not the licence compels it here.

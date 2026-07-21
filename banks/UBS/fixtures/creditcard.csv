@@ -1,0 +1,3 @@
+Numéro de compte;Numéro de carte;Titulaire de compte/carte;Date d'achat;Texte comptable;Secteur;Montant;Monnaie originale;Cours;Monnaie;Débit;Crédit;Ecriture
+ZZZZ ZZZZ ZZZZ;XXXX XXXX XXXX 0001;JEAN MUSTER;13.11.2026;www.example.ch LUGANO CHE;Magasin d ordinateurs;189.00;CHF;;CHF;189.00;;15.11.2026
+ZZZZ ZZZZ ZZZZ;XXXX XXXX XXXX 0001;JEAN MUSTER;16.11.2026;Remboursement achat;Restaurants, Bar;40.00;CHF;;CHF;;40.00;18.11.2026

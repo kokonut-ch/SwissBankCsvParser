@@ -1,0 +1,12 @@
+Von-Datum:;01.12.2023;;;;;
+Bis-Datum:;31.12.2023;;;;;
+Konto:;CH5604835012345678009;;;;;
+Währung:;CHF;;;;;
+;;;;;;
+Datum;Bewegungstyp;Avisierungstext;Gutschrift in CHF;Lastschrift in CHF;Label;Kategorie
+;;;;;;
+15.12.2023;Kontoauszug;Miete Dezember;;-1450;;Wohnen
+05.12.2023;Kontoauszug;Lohn November;5200.75;;;Einkommen
+;;;;;;
+Disclaimer:;;;;;;
+Der Inhalt dieses Dokuments wurde anhand der Filtereinstellungen der Kundinnen und Kunden erstellt.;;;;;;

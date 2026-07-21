@@ -1,0 +1,27 @@
+# Viseca
+
+> **Provenance:** derived from publicly documented format samples. Not yet
+> verified against a real Viseca export.
+
+## `viseca.card`
+
+```
+Date;ValutaDate;TransactionId;Amount;Currency;MerchantName;MerchantPlace;MerchantCountry;StateType;Details
+2026-09-15;2026-09-16;TX0000123;-105.45;CHF;Muster Shop;Lausanne;CH;Booked;Card payment
+```
+
+Structurally almost the same file as Migros Bank's card export: same merchant
+columns split into name, place and country, same transaction id, same signed
+amount.
+
+**The one difference is `StateType`, where Migros Bank prints `CardId`.** Each
+profile signs on its own heading and neither claims the other's file — which is
+the whole reason `migrosbank.card` does not sign on `MerchantName`, a column both
+of them print. There is a test for exactly that.
+
+Viseca also ships an Excel export (`TRANSAKTIONSDATUM;VORNAME;NACHNAME;…`). This
+package reads CSV only.
+
+## Fixtures
+
+Synthetic.

@@ -1,0 +1,7 @@
+"Erstellt am:";"2026.11.20";;;;;;;;
+;;;;;;;;;
+"Von:";"2026.11.01 (00:00)";"Bis:";"2026.11.26 (23:59)";;;;;;
+;;;;;;;;;
+"Datum";"Zeit";"Typ";"Status";"Betrag Transaktion (CHF)";"Rabatt";"Transaktionskosten (CHF)";"Niederlassung";"TWINT Terminal ID";"TWINT Order ID"
+"2026.11.01";"11:45";"Zahlung";"Erfolgreich";"49.35";"";"0.65";"Filiale Bern";"l068";"2r0vrh8j-6o52"
+"2026.11.03";"09:12";"Rückerstattung";"Erfolgreich";"-12.00";"";"0.00";"Filiale Bern";"l068";"7c7a-2p68-p68j"

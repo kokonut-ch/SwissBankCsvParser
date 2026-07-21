@@ -1,0 +1,8 @@
+parameters:
+    level: 7
+    paths:
+        - src
+        - banks
+    excludePaths:
+        - banks/*/tests/*
+    tmpDir: build/phpstan
