@@ -1,7 +1,6 @@
 # Raiffeisen
 
-> **Provenance:** derived from publicly documented format samples. Not yet
-> verified against a real Raiffeisen export.
+> **Provenance:** verified against a real Raiffeisen export.
 
 ## `raiffeisen.statement`
 

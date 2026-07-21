@@ -1,7 +1,6 @@
 # Viseca
 
-> **Provenance:** derived from publicly documented format samples. Not yet
-> verified against a real Viseca export.
+> **Provenance:** verified against a real Viseca export.
 
 ## `viseca.card`
 

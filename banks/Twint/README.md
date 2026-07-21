@@ -1,7 +1,6 @@
 # TWINT
 
-> **Provenance:** derived from publicly documented format samples. Not yet
-> verified against a real TWINT export.
+> **Provenance:** verified against a real TWINT export.
 
 ## `twint.settlement`
 
