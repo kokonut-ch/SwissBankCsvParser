@@ -136,8 +136,13 @@ Sorting is a decision too.
 
 A line carrying a balance but no movement is reported with `amount === null` rather than
 discarded. An amount cell holding a spreadsheet formula is read as `'0'` with a
-`Warning::AMOUNT_IS_FORMULA` rather than guessed at. Columns outside the core model land in
-`extras`, and the untouched cells are always in `raw`.
+`Warning::AMOUNT_IS_FORMULA` rather than guessed at.
+
+Columns the vocabulary recognises but the core model does not own — categories, card
+numbers, booking status, transaction types — land in `extras`, keyed by the heading as
+printed. A column it does not recognise at all is not lost either: `raw` always holds the
+original cells, in order. The distinction is worth knowing, because reading `raw` means
+counting columns, and a bank that reorders its export will move them.
 
 ## Warning codes are stable
 
@@ -244,6 +249,27 @@ cardholder.
 This is worth knowing even if you never touch those banks. It is why a card statement must
 not be handed to the generic reader, which takes signs at face value and would turn every
 charge into income.
+
+## A card statement says which card, and whether the line is settled
+
+One statement often covers several cards, and it lists pending authorisations beside booked
+ones — a pending line can still change amount or disappear. Both facts reach `extras`, on
+whichever banks print them, under the heading the file itself uses:
+
+| Bank | Card | Status |
+| --- | --- | --- |
+| Swisscard | `Card number` | `Status` |
+| Cornèrcard | `Card` | `Status` |
+| TWINT | — | `Status` |
+| UBS (card) | `Numéro de carte` | — |
+| Yuh | `CARD NUMBER` | — |
+
+```php
+$row->extras['Status'];  // 'Booked'
+```
+
+Neither belongs in the neutral model, so neither changes `amount`. Whether a pending row
+counts is your decision, as everywhere else here — but you can now make it.
 
 ---
 
