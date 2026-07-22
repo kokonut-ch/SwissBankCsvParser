@@ -123,6 +123,17 @@ final class Lexicon
                 'Catégorie', 'Categoria', 'Categoria Registrata',
                 'Category', 'Registered Category',
             ],
+            Term::CardNumber->value => [
+                'Kartennummer', 'Karten-Nr.', 'Karte',
+                'Numéro de carte', 'No de carte', 'N° de carte', 'Carte',
+                'Numero di carta', 'N. di carta', 'Carta',
+                'Card number', 'Card no.', 'Card',
+            ],
+            Term::Status->value => [
+                'Status', 'Buchungsstatus',
+                'Statut', 'État',
+                'Stato',
+            ],
             Term::TransactionType->value => [
                 'Bewegungstyp', 'Buchungsart', 'Auftragsart', 'Transaktionstyp',
                 'Type de transaction', 'Genre de comptabilisation', "Type d'opération",

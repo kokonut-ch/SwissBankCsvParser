@@ -28,16 +28,31 @@ Related: the file also prints a `Debit/Credit` word column beside the amount. It
 is deliberately **not** read. The sign already carries the direction, and
 consulting both would only create a way for them to disagree.
 
+## The card and the status are reported
+
+A Swisscard statement can cover several cards issued on one account, and it lists
+pending authorisations beside settled ones. Both facts change what a row means —
+a pending line can still change amount or disappear — so both are reported in
+`Row::$extras`:
+
+```php
+$row->extras['Card number'];  // 'XXXX 0001'
+$row->extras['Status'];       // 'Booked'
+```
+
+Neither belongs in the neutral model: the package reports what the file says and
+leaves to the caller whether a pending line counts. What it will not do is make
+that decision reachable only by counting columns in `Row::$raw`.
+
 ## A note on the fixture
 
 The column set is eight wide, and the positions of the date, description, card
 number, amount and registered category are documented. The names of the two
 remaining columns — given here as `Currency` and `Status` — are inferred.
 
-Nothing depends on them: columns are mapped by name, so if a real export calls
-them something else they are simply left unmapped and stay in `Row::$raw`. The
-profile requires only the date, the description, the amount and the registered
-category that identifies it.
+Columns are mapped by name, so if a real export calls them something else they are
+left unmapped and stay in `Row::$raw`. The profile requires only the date, the
+description, the amount and the registered category that identifies it.
 
 ## Fixtures
 
