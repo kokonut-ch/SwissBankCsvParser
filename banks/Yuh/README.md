@@ -11,9 +11,14 @@ DATE;ACTIVITY TYPE;ACTIVITY NAME;DEBIT;DEBIT CURRENCY;CREDIT;CREDIT CURRENCY;CAR
 ```
 
 Yuh is a banking *and* investing app, so the export carries a good deal that has
-no place in a bank statement: card numbers, localities, counterparties, fees, and
-the quantity, asset and unit price of any security traded. Those columns are not
-modelled — and not discarded either; they stay in `Row::$raw`.
+no place in a bank statement: localities, counterparties, fees, and the quantity,
+asset and unit price of any security traded. Those columns are not modelled — and
+not discarded either; they stay in `Row::$raw`.
+
+The card number is the exception, and it changed in `v0.1.1`. `CARD NUMBER` now
+reaches `Row::$extras` under that heading, because an export covering more than
+one card needs something to tell them apart. It is reported exactly as printed,
+masking included — worth knowing if you redact before logging or storing.
 
 Worth knowing:
 

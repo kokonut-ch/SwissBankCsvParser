@@ -52,7 +52,20 @@ it('keeps the columns it does not model in the raw row', function () {
 
     // Quantity, asset and price per unit have no place in a bank statement
     // model, and are not thrown away either.
-    expect($rows[2]->raw)->toContain('ACME', '125.00', 'BUY');
+    expect($rows[2]->raw)->toContain('ACME', '125.00', 'BUY')
+        // …and stay out of the modelled fields, which is the half of that
+        // sentence nothing used to check.
+        ->and($rows[2]->extras)->not->toHaveKeys(['ASSET', 'QUANTITY', 'PRICE PER UNIT']);
+});
+
+it('reports the card number as an extra, not only in the raw row', function () {
+    // Added in v0.1.1. Before that the shared vocabulary had no term for a card
+    // number, so this column reached Row::$raw alone and the README said so.
+    // The claim and the behaviour must not drift apart again.
+    $rows = yuhParser()->parse(yuhFixture())->rows;
+
+    expect($rows[0]->extras)->toBe(['CARD NUMBER' => 'XXXX 0001'])
+        ->and($rows[1]->extras)->toBe([]);
 });
 
 it('refuses an ordinary statement', function () {
