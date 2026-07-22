@@ -73,3 +73,17 @@ Worth knowing:
 All synthetic. `CH9300762011623852957` is the published Swiss example IBAN; the card number,
 the holder and every label were invented. `efinance-de-latin1.csv` is the German fixture
 re-encoded as ISO-8859-1, to cover the decoding path.
+
+Both header-driven formats are covered in all four languages PostFinance exports, because
+the headings are the only thing that identifies them and a wrong translation would be
+invisible to a suite that only ever read German and French:
+
+| | de | fr | it | en |
+| --- | --- | --- | --- | --- |
+| e-finance | `efinance-de.csv` | `efinance-fr.csv` | `efinance-it.csv` | `efinance-en.csv` |
+| credit card | `creditcard-de.csv` | `creditcard-fr.csv` | — | `creditcard-en.csv` |
+
+The Italian e-finance fixture is worth keeping for one reason beyond coverage: it says
+`Moneta:`, not `Valuta:`. Italian uses that word for the currency while German uses it for
+the value date, so the shared vocabulary lists it under the value date only and this profile
+has to name its currency heading itself.

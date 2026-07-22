@@ -1,0 +1,12 @@
+Data dal:;01.01.2026;;;;;
+Data al:;31.03.2026;;;;;
+Conto:;CH9300762011623852957;;;;;
+Moneta:;CHF;;;;;
+;;;;;;
+Data;Tipo di movimento;Testo di avviso;Accredito in CHF;Addebito in CHF;Label;Categoria
+;;;;;;
+10.03.2026;Registrazione contabile;Pagamento fornitore;;-150.5;;Acquisti
+10.01.2026;Registrazione contabile;Bonifico cliente;1'200.00;;;Vendite
+;;;;;;
+Disclaimer:;;;;;;
+Il contenuto del documento è stato generato in base alle impostazioni del filtro.;;;;;;

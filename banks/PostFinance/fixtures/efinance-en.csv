@@ -1,0 +1,12 @@
+Date from:;01.01.2026;;;;;
+Date to:;31.03.2026;;;;;
+Account:;CH9300762011623852957;;;;;
+Currency:;CHF;;;;;
+;;;;;;
+Date;Booking type;Notification text;Credit in CHF;Debit in CHF;Label;Category
+;;;;;;
+10.03.2026;Booking entry;Supplier payment;;-150.5;;Purchases
+10.01.2026;Booking entry;Customer transfer;1'200.00;;;Sales
+;;;;;;
+Disclaimer:;;;;;;
+The content of this document was generated from the customer filter settings.;;;;;;
