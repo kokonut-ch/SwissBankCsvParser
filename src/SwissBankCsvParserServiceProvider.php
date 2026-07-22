@@ -9,20 +9,16 @@ use Illuminate\Support\ServiceProvider;
 class SwissBankCsvParserServiceProvider extends ServiceProvider
 {
     /**
-     * Register any application services.
+     * The parser is a singleton because discovering the bank profiles scans
+     * banks/ on the filesystem. An application resolving it per row of an
+     * upload should pay for that once.
+     *
+     * The "SwissBankCsvParser" alias that makes the facade reachable without an
+     * import is declared in composer.json under "extra.laravel", where Laravel's
+     * package discovery picks it up.
      */
     public function register(): void
     {
         $this->app->singleton(SwissBankCsvParser::class);
-    }
-
-    /**
-     * Bootstrap any application services.
-     */
-    public function boot(): void
-    {
-        if (! $this->app->runningInConsole()) {
-            return;
-        }
     }
 }

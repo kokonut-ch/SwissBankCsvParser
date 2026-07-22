@@ -42,11 +42,14 @@ There is nothing to publish and nothing to configure.
 
 # Usage
 
-```php
-use Kokonut\SwissBankCsvParser\SwissBankCsvParser;
+The service provider and the `SwissBankCsvParser` facade register themselves, so there is
+nothing to add to `config/app.php`.
 
-$file = (new SwissBankCsvParser)->parse($csvContents);
-// or ->parseFile('/path/to/statement.csv')
+```php
+use Kokonut\SwissBankCsvParser\Facades\SwissBankCsvParser;
+
+$file = SwissBankCsvParser::parse($request->file('statement')->get());
+// or SwissBankCsvParser::parseFile('/path/to/statement.csv')
 
 $file->bank->name;          // 'PostFinance'
 $file->profile;             // 'postfinance.efinance'
@@ -67,9 +70,20 @@ foreach ($file as $row) {
 }
 ```
 
-In a Laravel application the service provider and the `SwissBankCsvParser` facade are
-registered automatically. Outside Laravel, instantiate the class directly, the parser has
-no framework dependencies.
+Package discovery also registers the short alias, so even the import is optional:
+
+```php
+$file = \SwissBankCsvParser::parse($contents);
+```
+
+The facade carries an `@method` tag for every method it forwards, which is what makes
+`SwissBankCsvParser::` complete in an IDE. A test asserts those tags and the parser's public
+methods stay in step, so autocompletion cannot quietly fall behind the class.
+
+It is bound as a **singleton**, because discovering the bank profiles scans `banks/` on the
+filesystem and an upload loop should pay for that once. Type-hint
+`Kokonut\SwissBankCsvParser\SwissBankCsvParser` wherever you would rather inject it than
+reach for the facade.
 
 ## Identifying the bank before parsing
 
@@ -77,7 +91,7 @@ no framework dependencies.
 single row. It is cheap enough to run on upload.
 
 ```php
-$report = (new SwissBankCsvParser)->detect($csvContents);
+$report = SwissBankCsvParser::detect($csvContents);
 
 $report->best()->bank->name;   // 'PostFinance'
 $report->best()->score;        // 0.90
@@ -88,6 +102,10 @@ if (! $report->isConfident()) {
     // A good moment to ask whoever uploaded it.
 }
 ```
+
+`SwissBankCsvParser::supports($csvContents)` answers the same question as a plain boolean,
+and `SwissBankCsvParser::profiles()` hands back the registry itself when you need to list
+what the package can read.
 
 ---
 

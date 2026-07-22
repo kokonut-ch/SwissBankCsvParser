@@ -12,9 +12,9 @@ function postFinanceCardParser(): SwissBankCsvParser
     return new SwissBankCsvParser(new ProfileRegistry([new CreditCardProfile]));
 }
 
-function postFinanceCardFixture(): string
+function postFinanceCardFixture(string $name = 'creditcard-fr.csv'): string
 {
-    return (string) file_get_contents(__DIR__.'/../fixtures/creditcard-fr.csv');
+    return (string) file_get_contents(__DIR__.'/../fixtures/'.$name);
 }
 
 it('reads a credit card statement', function () {
@@ -50,6 +50,39 @@ it('ignores the billing period column and the footer', function () {
     expect(array_map(fn (Row $row) => $row->label, $file->rows))
         ->toBe(['Achat Boutique', 'Remboursement commande']);
 });
+
+it('reads the German card statement', function () {
+    $file = postFinanceCardParser()->parse(postFinanceCardFixture('creditcard-de.csv'));
+
+    expect($file->account->number)->toBe('0000 0000 0000 0001')
+        ->and($file->account->holder)->toBe('HANS MUSTER')
+        ->and($file)->toHaveCount(2)
+        ->and($file->rows[0]->label)->toBe('Einkauf Boutique')
+        ->and($file->rows[0]->valueDate?->format('Y-m-d'))->toBe('2026-10-28')
+        ->and($file->rows[0]->amount)->toBe('-45.9')
+        ->and($file->rows[1]->amount)->toBe('20');
+});
+
+it('reads the English card statement', function () {
+    $file = postFinanceCardParser()->parse(postFinanceCardFixture('creditcard-en.csv'));
+
+    expect($file->account->number)->toBe('0000 0000 0000 0001')
+        ->and($file->account->holder)->toBe('JOHN SMITH')
+        ->and($file)->toHaveCount(2)
+        ->and($file->rows[0]->label)->toBe('Purchase Boutique')
+        ->and($file->rows[0]->valueDate?->format('Y-m-d'))->toBe('2026-10-28')
+        ->and($file->rows[0]->amount)->toBe('-45.9')
+        ->and($file->rows[1]->amount)->toBe('20');
+});
+
+it('flips the printed sign in every language', function (string $fixture) {
+    // The card statement prints a purchase positive, because it is what the
+    // holder owes. Every language does, and every one must come back negative.
+    $rows = postFinanceCardParser()->parse(postFinanceCardFixture($fixture))->rows;
+
+    expect($rows[0]->isDebit())->toBeTrue()
+        ->and($rows[1]->isCredit())->toBeTrue();
+})->with(['creditcard-fr.csv', 'creditcard-de.csv', 'creditcard-en.csv']);
 
 it('does not claim an account statement', function () {
     $csv = (string) file_get_contents(__DIR__.'/../fixtures/efinance-fr.csv');

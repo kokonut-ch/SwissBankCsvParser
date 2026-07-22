@@ -68,6 +68,8 @@ abstract class HeaderDrivenProfile extends Profile
             Term::AccountIban,
             Term::Category,
             Term::TransactionType,
+            Term::CardNumber,
+            Term::Status,
         ];
     }
 

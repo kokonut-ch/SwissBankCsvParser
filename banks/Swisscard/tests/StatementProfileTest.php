@@ -49,8 +49,22 @@ it('ignores the debit/credit word column', function () {
 it('keeps the registered category as an extra', function () {
     $rows = swisscardParser()->parse(swisscardFixture())->rows;
 
-    expect($rows[2]->extras)->toBe(['Registered Category' => 'Restaurants, Bar'])
-        ->and($rows[2]->label)->toBe('RESTAURANT DU PONT');
+    expect($rows[2]->extras)->toBe([
+        'Card number' => 'XXXX 0001',
+        'Status' => 'Booked',
+        'Registered Category' => 'Restaurants, Bar',
+    ])->and($rows[2]->label)->toBe('RESTAURANT DU PONT');
+});
+
+it('reports the card and the booking status, which decide what a row means', function () {
+    // A statement can cover several cards, and it lists pending authorisations
+    // beside settled ones. Neither belongs in the neutral model, and neither
+    // may be left to positional indexing into $raw: this file's own column
+    // names are inferred, so those positions are the least reliable thing here.
+    $rows = swisscardParser()->parse(swisscardFixture())->rows;
+
+    expect($rows[0]->extras['Card number'])->toBe('XXXX 0001')
+        ->and($rows[0]->extras['Status'])->toBe('Booked');
 });
 
 it('refuses a statement without the registered category column', function () {

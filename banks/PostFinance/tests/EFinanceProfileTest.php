@@ -78,6 +78,52 @@ it('reads the German export with German headings', function () {
         ->and($file->rows[1]->amount)->toBe('5200.75');
 });
 
+it('reads the Italian export with Italian headings', function () {
+    $file = postFinanceEFinanceParser()->parse(postFinanceFixture('efinance-it.csv'));
+
+    // "Moneta", not "Valuta": in Italian that word means currency, but German
+    // uses it for the value date, so the profile has to name this one itself.
+    expect($file->account->iban)->toBe('CH9300762011623852957')
+        ->and($file->account->currency)->toBe('CHF')
+        ->and($file->period->from?->format('Y-m-d'))->toBe('2026-01-01')
+        ->and($file)->toHaveCount(2)
+        ->and($file->rows[0]->label)->toBe('Pagamento fornitore')
+        ->and($file->rows[0]->amount)->toBe('-150.5')
+        ->and($file->rows[1]->amount)->toBe('1200.00')
+        ->and($file->rows[0]->extras)->toBe([
+            'Tipo di movimento' => 'Registrazione contabile',
+            'Categoria' => 'Acquisti',
+        ]);
+});
+
+it('reads the English export with English headings', function () {
+    $file = postFinanceEFinanceParser()->parse(postFinanceFixture('efinance-en.csv'));
+
+    expect($file->account->iban)->toBe('CH9300762011623852957')
+        ->and($file->account->currency)->toBe('CHF')
+        ->and($file->period->to?->format('Y-m-d'))->toBe('2026-03-31')
+        ->and($file)->toHaveCount(2)
+        ->and($file->rows[0]->label)->toBe('Supplier payment')
+        ->and($file->rows[0]->amount)->toBe('-150.5')
+        ->and($file->rows[1]->amount)->toBe('1200.00')
+        ->and($file->rows[0]->extras)->toBe([
+            'Booking type' => 'Booking entry',
+            'Category' => 'Purchases',
+        ]);
+});
+
+it('identifies the format in each of the four languages', function (string $fixture, string $heading) {
+    $report = postFinanceEFinanceParser()->detect(postFinanceFixture($fixture));
+
+    expect($report->best()?->profile)->toBe('postfinance.efinance')
+        ->and($report->best()?->reasons)->toContain(sprintf('distinctive heading "%s"', $heading));
+})->with([
+    ['efinance-de.csv', 'Avisierungstext'],
+    ['efinance-fr.csv', 'Texte de notification'],
+    ['efinance-it.csv', 'Testo di avviso'],
+    ['efinance-en.csv', 'Notification text'],
+]);
+
 it('decodes a Latin-1 export and says so', function () {
     $file = postFinanceEFinanceParser()->parse(postFinanceFixture('efinance-de-latin1.csv'));
 
