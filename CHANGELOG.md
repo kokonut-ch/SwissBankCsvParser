@@ -1,6 +1,42 @@
 # Release Notes
 
-## [Unreleased](https://github.com/Kokonut-ch/SwissBankCsvParser/compare/v0.1.1...main)
+## [Unreleased](https://github.com/Kokonut-ch/SwissBankCsvParser/compare/v0.1.2...main)
+
+## [v0.1.2](https://github.com/Kokonut-ch/SwissBankCsvParser/releases/tag/v0.1.2) - 2026-07-22
+
+Republishes `v0.1.1`, whose package never contained the code its notes described.
+
+The `v0.1.1` tag was first created on a pull request branch, and Packagist crawled it there
+two minutes before that branch was squash-merged. Moving the tag onto the squashed commit
+afterwards changed nothing: Packagist keeps the reference it first saw for a tag it already
+knows, precisely so that a published tag cannot be repointed at other code. The archive it
+serves as `v0.1.1` therefore has a `src/` identical, byte for byte, to `v0.1.0`.
+
+So anyone who installed `v0.1.1` is running `v0.1.0`. `Term::CardNumber` and `Term::Status`
+do not exist in that archive, and a column no term matches never reaches `extras` at all —
+card numbers and booking status fall through to `Row::$raw`, exactly as before. The
+PostFinance Italian and English fixtures are missing too, though those only ever proved
+behaviour rather than provided it.
+
+Nothing here is new. `v0.1.2` is `v0.1.1` as it was written, plus the two documentation
+corrections below, tagged on `main` after the merge rather than on the branch before it.
+
+### Documentation
+
+`Row::$extras` and `Row::$raw` were described as though they were one idea. They are two. A
+column the shared vocabulary recognises but the neutral model does not own reaches
+`extras`, keyed by the heading as printed. A column no term matches is not discarded
+either, but it survives in `raw` alone, reachable only by counting columns — which a bank
+that reorders its export will break. The README now draws that line, and names the card and
+status columns each bank reports.
+
+The Yuh README still listed card numbers among the columns that stay in `raw`, which
+`v0.1.1` had made false. A test now asserts `CARD NUMBER` reaches `extras`, so the sentence
+and the behaviour cannot drift apart again.
+
+**Upgrade note:** `composer update kokonut-ch/laravel-swiss-bank-csv-parser` is enough.
+`v0.1.2` is a different commit, so Composer fetches it rather than reusing the archive it
+cached for `v0.1.1`.
 
 ## [v0.1.1](https://github.com/Kokonut-ch/SwissBankCsvParser/releases/tag/v0.1.1) - 2026-07-22
 
