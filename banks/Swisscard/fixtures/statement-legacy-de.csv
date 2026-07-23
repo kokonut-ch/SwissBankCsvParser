@@ -1,0 +1,3 @@
+Transaktionsdatum,Beschreibung,Kartennummer,Währung,Betrag,Debit/Kredit,Status,Kategorie
+"16.04.2026","MUSTER SHOP ZUERICH","3776 62**** *4927","CHF","23.70","Belastung","Verbucht","SHOPPING"
+"15.04.2026","RUECKVERGUETUNG MUSTER SHOP","3776 62**** *4927","CHF","-12.00","Gutschrift","Verbucht","SHOPPING"

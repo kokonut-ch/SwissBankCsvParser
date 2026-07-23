@@ -67,6 +67,69 @@ it('reports the card and the booking status, which decide what a row means', fun
         ->and($rows[0]->extras['Status'])->toBe('Booked');
 });
 
+it('reads the 2023 layout, whose category has no Registered prefix', function () {
+    // The older export is eight quoted, comma-separated columns and its
+    // category heading is plain "Kategorie" — no "Registrierte" prefix, so the
+    // registered-category signature never fires. With nothing else to sign on,
+    // the file fell through to the generic reader, which took the
+    // issuer-signed amounts at face value and turned every purchase into
+    // income.
+    $csv = (string) file_get_contents(__DIR__.'/../fixtures/statement-legacy-de.csv');
+
+    $file = swisscardParser()->parse($csv);
+
+    expect($file->profile)->toBe('swisscard.statement')
+        ->and($file)->toHaveCount(2)
+        ->and($file->rows[0]->amount)->toBe('-23.70')
+        ->and($file->rows[0]->isDebit())->toBeTrue()
+        ->and($file->rows[1]->amount)->toBe('12.00')
+        ->and($file->rows[1]->isCredit())->toBeTrue();
+});
+
+it('reads the Italian statement, where Valuta is the currency', function () {
+    // Italian "Valuta" means currency, not value date — the shared lexicon
+    // deliberately lists it under ValueDate only, so this profile has to claim
+    // it for Currency explicitly or the currency of every Italian row is lost.
+    $csv = (string) file_get_contents(__DIR__.'/../fixtures/statement-legacy-it.csv');
+
+    $file = swisscardParser()->parse($csv);
+
+    expect($file->profile)->toBe('swisscard.statement')
+        ->and($file->rows[0]->currency)->toBe('CHF')
+        ->and($file->rows[0]->valueDate)->toBeNull()
+        ->and($file->rows[0]->amount)->toBe('-39.00')
+        ->and($file->rows[1]->amount)->toBe('163.60');
+});
+
+it('reads the Italian twelve-column layout, pending foreign rows included', function () {
+    // A purchase in a foreign currency that is still pending has no CHF amount
+    // yet: Valuta and Importo are both empty, only the foreign pair is filled.
+    // The row is kept with a null amount — dropping it is the caller's call.
+    $csv = (string) file_get_contents(__DIR__.'/../fixtures/statement-it.csv');
+
+    $file = swisscardParser()->parse($csv);
+
+    expect($file->profile)->toBe('swisscard.statement')
+        ->and($file)->toHaveCount(3)
+        ->and($file->rows[0]->currency)->toBe('CHF')
+        ->and($file->rows[0]->amount)->toBe('-20.85')
+        ->and($file->rows[1]->amount)->toBeNull()
+        ->and($file->rows[1]->currency)->toBeNull()
+        ->and($file->rows[2]->amount)->toBe('15.00');
+});
+
+it('lets the sign win when the debit/credit word disagrees', function () {
+    // The word column is not consulted, so a line where it contradicts the
+    // sign must follow the sign. Without such a line, "ignored" is untestable.
+    $csv = "Transaction date;Description;Card number;Currency;Amount;Debit/Credit;Status;Registered Category\n"
+        ."13.11.2026;MUSTER SHOP;XXXX 0001;CHF;50.00;Credit;Booked;Shopping\n";
+
+    $rows = swisscardParser()->parse($csv)->rows;
+
+    expect($rows[0]->amount)->toBe('-50.00')
+        ->and($rows[0]->isDebit())->toBeTrue();
+});
+
 it('refuses a statement without the registered category column', function () {
     $csv = "Transaction date;Description;Currency;Amount\n13.11.2026;Shop;CHF;189.00\n";
 
