@@ -35,8 +35,12 @@ Data dell'operazione;Ora dell'operazione;Data di registrazione;Data di valuta;Mo
 `Addebito/Accredito` repeats the direction in words. It is ignored: the sign is
 already on the amount, and reading both would be a way to disagree with oneself.
 
-The booking-date column is sometimes empty while the operation date in the first
-column is always filled, so the first column is the one used.
+Two dates, one rule: the booking date is the row's date whenever it is filled —
+it is the date the balance column moves on — and the operation date in the
+first column fills in when it is not. That is this package's rule, applied to
+every UBS layout; UBS's own import rules for this export read the operation
+date alone. Since about 2024 the Italian export names the booking date
+`Data di contabilizzazione` rather than `Data di registrazione`; both are read.
 
 This profile and the split one cannot both match a file: one needs a debit and a
 credit column, the other an amount column, and no UBS export has all three.

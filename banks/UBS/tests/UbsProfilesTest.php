@@ -157,3 +157,18 @@ it('falls back to the trade date only when the booking date is empty', function 
 
     expect($file->rows[0]->date->format('Y-m-d'))->toBe('2026-09-20');
 });
+
+it('reads the 2024 Italian booking-date label, Data di contabilizzazione', function () {
+    // UBS renamed the Italian booking date from "Data di registrazione" to
+    // "Data di contabilizzazione" around 2024. Unrecognised, the column was
+    // invisible and the row date silently fell back to the trade date — the
+    // same file in German or French kept the booking date.
+    $csv = "Data dell'operazione;Data di contabilizzazione;Data di valuta;Moneta;"
+        ."Importo della transazione;Descrizione1;N. di transazione;Note a piè di pagina\n"
+        ."2026-09-27;2026-09-29;2026-09-27;CHF;-5.35;Pagamento;123456TI;\n";
+
+    $file = ubsParser()->parse($csv);
+
+    expect($file->rows[0]->date->format('Y-m-d'))->toBe('2026-09-29')
+        ->and($file->rows[0]->valueDate?->format('Y-m-d'))->toBe('2026-09-27');
+});
