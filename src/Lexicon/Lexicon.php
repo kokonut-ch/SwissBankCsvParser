@@ -133,6 +133,10 @@ final class Lexicon
                 'Status', 'Buchungsstatus',
                 'Statut', 'État',
                 'Stato',
+                // TWINT's English report prints "State" where its German one
+                // prints "Status". Matched whole-string, so "StateType"
+                // (Viseca, Migros Bank) is unaffected.
+                'State',
             ],
             Term::TransactionType->value => [
                 'Bewegungstyp', 'Buchungsart', 'Auftragsart', 'Transaktionstyp',

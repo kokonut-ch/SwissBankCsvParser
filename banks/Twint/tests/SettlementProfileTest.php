@@ -49,6 +49,28 @@ it('does not net the fee off the transaction amount', function () {
         ->and($rows[0]->raw)->toContain('0.65');
 });
 
+it('reads the English report, where the status column is named State', function () {
+    $csv = (string) file_get_contents(__DIR__.'/../fixtures/settlement-en.csv');
+
+    $file = twintParser()->parse($csv);
+
+    // TWINT's English export prints "State" where the German one prints
+    // "Status". Both must reach extras — a "Failed" line carries an amount, and
+    // without the state a failed payment reads as money actually cashed.
+    expect($file->profile)->toBe('twint.settlement')
+        ->and($file->account->currency)->toBe('CHF')
+        ->and($file)->toHaveCount(3)
+        ->and($file->rows[0]->extras['State'] ?? null)->toBe('Settled')
+        ->and($file->rows[1]->extras['State'] ?? null)->toBe('Failed')
+        ->and($file->rows[1]->amount)->toBe('20.00');
+});
+
+it('keeps the status of the German report in extras', function () {
+    $rows = twintParser()->parse(twintFixture())->rows;
+
+    expect($rows[0]->extras['Status'] ?? null)->toBe('Erfolgreich');
+});
+
 it('refuses a file without a TWINT identifier', function () {
     $csv = "\"Datum\";\"Typ\";\"Betrag Transaktion (CHF)\"\n\"2026.11.01\";\"Zahlung\";\"49.35\"\n";
 

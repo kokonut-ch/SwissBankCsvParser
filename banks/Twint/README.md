@@ -22,7 +22,13 @@ Worth knowing:
 - Dates are dot-separated ISO — `2026.11.01` — with the time in its own column.
 - The currency travels in brackets on the amount heading.
 - `TWINT Terminal ID` and `TWINT Order ID` identify the file beyond doubt.
+- **The English report prints `State` where the German one prints `Status`**, and
+  a `Failed` line still carries an amount. The state reaches `extras` under the
+  heading the file uses — filter on it before counting a line as money cashed.
+- The English report is wider — merchant references, the name in the statement,
+  first and last name. Those columns are not modelled and stay in `Row::$raw`.
 
 ## Fixtures
 
-Synthetic, report preamble and a refund row included.
+Synthetic. The German report with preamble and a refund row; the English report
+with the totals block, a `Failed` payment and a reversal.
