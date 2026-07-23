@@ -17,11 +17,12 @@ use Kokonut\SwissBankCsvParser\Profiles\HeaderDrivenProfile;
  * flipped so that a negative one means money left the cardholder, as everywhere
  * else in this package.
  *
- * Structurally almost the same file as Migros Bank's card export — same
- * merchant columns, same transaction id, one signed amount column. The sign
- * convention is where they part ways: `migrosbank.card` takes its amounts at
- * face value. Detection-wise, Viseca prints `StateType` where Migros Bank
- * prints `CardId`, and that is what each profile signs on.
+ * Structurally almost the same file as Migros Bank's card export — the same
+ * platform produces both, with the same columns and the same issuer-side sign.
+ * The one difference in the published samples is Migros Bank's trailing
+ * `Exchange Rate` column, absent here. Signing on what is present cannot
+ * separate the two — both print `CardId` and `StateType` — so this profile
+ * declares that column disqualifying, and Migros Bank's signs on it.
  */
 final class CardProfile extends HeaderDrivenProfile
 {
@@ -67,6 +68,17 @@ final class CardProfile extends HeaderDrivenProfile
     protected function requiredHeadings(): array
     {
         return ['StateType'];
+    }
+
+    /**
+     * Migros Bank's export prints everything this one does, `StateType`
+     * included, plus a trailing exchange-rate column. That column is the only
+     * thing telling the two apart, so its presence hands the file to
+     * {@see \Kokonut\SwissBankCsvParser\Banks\MigrosBank\CardProfile}.
+     */
+    protected function excludedHeadings(): array
+    {
+        return ['Exchange Rate'];
     }
 
     protected function requiresSignature(): bool

@@ -241,10 +241,10 @@ after all, that is exactly the evidence needed to add a profile. See
 
 ## Card statements invert the sign
 
-Swisscard, Cornèrcard and Viseca write their statements from the **issuer's** point of view:
-a purchase is printed positive, because it is what you owe, and a refund negative. Their
-profiles flip it, so that here as everywhere else a negative amount means money left the
-cardholder.
+Swisscard, Cornèrcard, Viseca and Migros Bank write their statements from the **issuer's**
+point of view: a purchase is printed positive, because it is what you owe, and a refund
+negative. Their profiles flip it, so that here as everywhere else a negative amount means
+money left the cardholder.
 
 This is worth knowing even if you never touch those banks. It is why a card statement must
 not be handed to the generic reader, which takes signs at face value and would turn every

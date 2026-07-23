@@ -120,9 +120,10 @@ abstract class HeaderDrivenProfile extends Profile
      *
      * The mirror of {@see requiredHeadings()}, and occasionally the only honest
      * discriminator there is. Migros Bank and Viseca ship near-identical card
-     * exports; Viseca's carries both `CardId` and `StateType`, Migros Bank's
-     * only `CardId`. Signing on what is present cannot separate them — Migros
-     * Bank has to say what must be *absent*.
+     * exports — both carry `CardId` and `StateType` — and only Migros Bank's
+     * ends in an `Exchange Rate` column. Signing on what is present cannot
+     * separate them: Migros Bank signs on that column, and Viseca has to say
+     * it must be *absent*.
      *
      * @return list<string>
      */

@@ -5,15 +5,29 @@
 
 ## `migrosbank.card`
 
-The card transaction export, which names itself plainly.
+The card transaction export, produced by the same platform as Viseca's.
 
 ```
-Date;ValutaDate;TransactionId;CardId;Currency;Amount;MerchantName;MerchantPlace;MerchantCountry;Details
-2026-09-15;2026-09-16;TX0000123;XXXX0001;CHF;-105.45;Muster Shop;Lausanne;CH;Card payment
+TransactionId,CardId,Date,ValutaDate,Amount,Currency,OriginalAmount,OriginalCurrency,MerchantName,MerchantPlace,MerchantCountry,StateType,Details,Type,Exchange Rate
+TX0000123,XXXX0001,2026-09-15 13:11:50,2026-09-16 00:00:00,105.45,CHF,105.45,CHF,Muster Shop,Lausanne,CHE,BOOKED,Card payment,merchant,1.000000
 ```
 
-One signed amount column. The merchant is split across name, place and country;
-those three plus `Details` make up the description, joined in that order.
+**The sign is inverted.** Like Viseca's export, the file is written from the
+issuer's point of view: a purchase is printed *positive* — the `105.45` above is
+money the cardholder owes — and a refund negative. The amounts are flipped, so a
+negative `amount` means money left the cardholder, as everywhere else in this
+package. Every purchase in the published sample is positive.
+
+The merchant is split across name, place and country; those three plus
+`Details` make up the description, joined in that order. Dates carry a clock
+time, which is dropped. `CardId`, `StateType` and the original-currency pair
+are not modelled and stay in `Row::$raw`.
+
+**Told apart from Viseca by the `Exchange Rate` column.** Both exports carry
+`CardId` and `StateType`; the trailing exchange-rate column is the one heading
+the published Migros Bank sample has and Viseca's does not. This profile signs
+on it, and `viseca.card` declares it disqualifying. That is the whole evidence
+base — thin, and stated here so nobody mistakes it for more.
 
 ## The account statement is deliberately not claimed
 

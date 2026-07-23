@@ -12,12 +12,19 @@ use Kokonut\SwissBankCsvParser\Profiles\HeaderDrivenProfile;
 /**
  * Migros Bank card transaction export.
  *
- * Unlike the bank's account statement — see this bank's README for why that one
- * is deliberately not claimed — the card export names itself clearly, with
- * `CardId` and a merchant broken into name, place and country.
+ * Produced by the same platform as Viseca's — same columns, same conventions —
+ * and, like it, written from the issuer's point of view: **a purchase is
+ * printed positive and a refund negative**. The amounts are flipped so that a
+ * negative one means money left the cardholder, as everywhere else here.
  *
- * Those three merchant columns plus `Details` make up the description, joined in
- * that order, which is how the file reads on screen.
+ * The one structural difference in the published samples is the trailing
+ * `Exchange Rate` column, which Viseca's export does not carry — everything
+ * else, `CardId` and `StateType` included, appears in both files. That column
+ * is therefore the signature, and Viseca's profile excludes it.
+ *
+ * The three merchant columns plus `Details` make up the description, joined in
+ * that order, which is how the file reads on screen. The bank's *account*
+ * statement is deliberately not claimed — see this bank's README for why.
  */
 final class CardProfile extends HeaderDrivenProfile
 {
@@ -38,7 +45,7 @@ final class CardProfile extends HeaderDrivenProfile
 
     protected function amountModel(): AmountModel
     {
-        return AmountModel::SignedColumn;
+        return AmountModel::InvertedSignedColumn;
     }
 
     protected function dateFormats(): array
@@ -56,19 +63,15 @@ final class CardProfile extends HeaderDrivenProfile
     }
 
     /**
-     * `CardId` alone, deliberately. Viseca ships a near-identical export whose
-     * only structural difference is `StateType` where this one has `CardId` —
-     * so signing on `MerchantName`, which both print, would have this profile
-     * claiming Viseca's files.
+     * `Exchange Rate` alone, deliberately. Viseca's near-identical export
+     * carries `CardId` and `StateType` too, so signing on either would have
+     * this profile claiming Viseca's files. The exchange-rate column is the
+     * one heading the published Migros Bank sample carries and Viseca's does
+     * not.
      */
     protected function signatureHeadings(): array
     {
-        return ['CardId'];
-    }
-
-    protected function excludedHeadings(): array
-    {
-        return ['StateType'];
+        return ['Exchange Rate'];
     }
 
     protected function requiresSignature(): bool
