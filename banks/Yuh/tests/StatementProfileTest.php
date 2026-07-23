@@ -73,3 +73,21 @@ it('refuses an ordinary statement', function () {
 
     expect(yuhParser()->supports($csv))->toBeFalse();
 });
+
+it('reads the slashed dates the real export prints', function () {
+    // Upstream's import app validates Yuh dates against dd/mm/yyyy with
+    // slashes, and its sample file prints them that way; dotted dates exist
+    // only in an outdated comment. A file in the real convention was detected
+    // as Yuh and then silently emptied to zero rows.
+    $csv = "DATE;ACTIVITY TYPE;ACTIVITY NAME;DEBIT;DEBIT CURRENCY;CREDIT;CREDIT CURRENCY;CARD NUMBER;LOCALITY;RECIPIENT;SENDER;FEES/COMMISSION;BUY/SELL;QUANTITY;ASSET;PRICE PER UNIT\n"
+        ."04/09/2026;Card payment;Muster Boutique;11.32;CHF;;;XXXX 0001;Lausanne;;;;;;;\n"
+        ."02/11/2026;Incoming payment;Salaire novembre;;;5200.00;CHF;;;;Muster AG;;;;;\n";
+
+    $file = yuhParser()->parse($csv);
+
+    expect($file->profile)->toBe('yuh.statement')
+        ->and($file)->toHaveCount(2)
+        ->and($file->rows[0]->date->format('Y-m-d'))->toBe('2026-09-04')
+        ->and($file->rows[0]->amount)->toBe('-11.32')
+        ->and($file->rows[1]->amount)->toBe('5200.00');
+});
