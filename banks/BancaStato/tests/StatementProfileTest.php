@@ -27,16 +27,20 @@ it('reads a Banca Stato statement', function () {
 it('signs from the debit and credit columns and reads Swiss thousands', function () {
     $rows = bancaStatoParser()->parse(bancaStatoFixture())->rows;
 
+    // Both balances, so the chain stays checked: the older balance plus the
+    // newer amount must equal the newer balance.
     expect($rows[0]->amount)->toBe('439.20')
-        ->and($rows[0]->balance)->toBe('62409.47')
-        ->and($rows[1]->amount)->toBe('-293.00');
+        ->and($rows[0]->balance)->toBe('62555.67')
+        ->and($rows[1]->amount)->toBe('-293.00')
+        ->and($rows[1]->balance)->toBe('62116.47');
 });
 
-it('folds the detail line into the booking above', function () {
+it('keeps the order type as an extra, as Bank Cler does', function () {
     $rows = bancaStatoParser()->parse(bancaStatoFixture())->rows;
 
-    expect($rows[0]->label)->toContain('Accredito cliente Muster SA')
-        ->and($rows[0]->label)->toContain('importo totale originale: CHF 439.20');
+    expect($rows[0]->label)->toBe('Accredito cliente Muster SA')
+        ->and($rows[0]->extras)->toBe(['Tipo' => 'Bonifico'])
+        ->and($rows[1]->extras)->toBe(['Tipo' => 'Pagamento']);
 });
 
 it('reads the external reference', function () {

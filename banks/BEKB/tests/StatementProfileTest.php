@@ -29,7 +29,10 @@ it('takes the signed amount and ignores the direction sentence', function () {
 
     // "Gutschrift per 27.06.2026" spells the direction out in words. The sign
     // already says it.
+    // Both balances, so the chain stays checked: the file is newest first,
+    // and the older balance plus the newer amount equals the newer balance.
     expect($rows[0]->amount)->toBe('629.74')
+        ->and($rows[0]->balance)->toBe('10974.14')
         ->and($rows[1]->amount)->toBe('-53.30')
         ->and($rows[1]->balance)->toBe('10344.40');
 });
