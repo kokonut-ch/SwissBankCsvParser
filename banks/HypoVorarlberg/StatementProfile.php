@@ -18,12 +18,14 @@ use Kokonut\SwissBankCsvParser\Profiles\HeaderDrivenProfile;
  * {@see BankIdentity} says so.
  *
  * By far the most detailed export this package reads: SEPA mandate and creditor
- * identifiers, the counterparty's name, BIC and account, fee information, two
+ * identifiers, the counterparty's name, BIC and account, fee information, three
  * kinds of category. Only what the neutral model has a field for is mapped; all
  * of it survives in {@see Row::$raw}.
  *
- * Two Austrian habits: amounts use a comma decimal (`-40,51`) and dates are
- * dot-separated ISO (`2026.12.31`). The amount is signed the ordinary way.
+ * One Austrian habit: amounts use a comma decimal (`-40,51`). Dates are ISO
+ * with dashes (`2026-12-31`) in every attested sample; the dotted form
+ * (`2026.12.31`) is accepted defensively. The amount is signed the ordinary
+ * way.
  */
 final class StatementProfile extends HeaderDrivenProfile
 {

@@ -12,10 +12,16 @@ use Kokonut\SwissBankCsvParser\Profiles\HeaderDrivenProfile;
 /**
  * Viseca card transaction export.
  *
- * Structurally almost the same file as Migros Bank's card export — same merchant
- * columns, same transaction id, same signed amount. The one difference is that
- * Viseca prints `StateType` where Migros Bank prints `CardId`, and that is what
- * each profile signs on. Nothing else in either file distinguishes them.
+ * Written from the issuer's point of view: **a purchase is printed positive** —
+ * it is what the cardholder owes — **and a refund negative**. The amounts are
+ * flipped so that a negative one means money left the cardholder, as everywhere
+ * else in this package.
+ *
+ * Structurally almost the same file as Migros Bank's card export — same
+ * merchant columns, same transaction id, one signed amount column. The sign
+ * convention is where they part ways: `migrosbank.card` takes its amounts at
+ * face value. Detection-wise, Viseca prints `StateType` where Migros Bank
+ * prints `CardId`, and that is what each profile signs on.
  */
 final class CardProfile extends HeaderDrivenProfile
 {
