@@ -1,6 +1,6 @@
 Card account:;0000 0000 0000 0001;;;;
 Card:;XXXX XXXX XXXX 0001 PostFinance Visa;;;;
-Card holder:;JOHN SMITH;;;;
+Card owner:;JOHN SMITH;;;;
 Booking type:;All;;;;
 
 Billing period;Booking date;Purchase date;Booking details;Credit in CHF;Debit in CHF

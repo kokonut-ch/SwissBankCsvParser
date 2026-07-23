@@ -81,7 +81,9 @@ final class CreditCardProfile extends HeaderDrivenProfile
     {
         return new HeaderBlock(
             account: ['Kartenkonto', 'Conto della carta', 'Compte de carte', 'Card account'],
-            holder: ['Karteninhaber', 'Titolare della carta', 'Titulaire de la carte', 'Card holder'],
+            // The English export labels the holder "Card owner"; "Card holder"
+            // is kept in case both wordings circulate.
+            holder: ['Karteninhaber', 'Titolare della carta', 'Titulaire de la carte', 'Card owner', 'Card holder'],
         );
     }
 }
