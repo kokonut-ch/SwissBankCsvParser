@@ -48,7 +48,15 @@ final class StatementProfile extends HeaderDrivenProfile
 
     protected function signatureHeadings(): array
     {
-        return ['Conto No.', 'Konto-Nr.', 'Compte No.', 'Account No.', 'Erfassungsdatum'];
+        // The newer layout (2024) drops the account number from the heading row,
+        // leaving only its booking-date heading to recognise it by. Cornèr names
+        // that date "Erfassungsdatum" / "Data registrazione" / "Registration
+        // date" — one per language, all three listed so no language is rejected
+        // while its siblings are accepted.
+        return [
+            'Conto No.', 'Konto-Nr.', 'Compte No.', 'Account No.',
+            'Erfassungsdatum', 'Data registrazione', 'Registration date',
+        ];
     }
 
     protected function requiresSignature(): bool

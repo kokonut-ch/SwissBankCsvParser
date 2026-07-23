@@ -23,9 +23,17 @@ Worth knowing:
   reference and sometimes the counterparty's full postal address, one line each.
   All of them are folded into the booking above. Labels get long; the
   alternative is losing the reference and the counterparty entirely.
-- Day-first slashed dates (`31/12/2026`), and older files use two-digit years.
+- Day-first slashed dates. Real exports mostly print two-digit years
+  (`28/05/24`); four-digit years and dotted dates are accepted as well.
 - One signed amount column.
+- **The newer layout (2024) drops `Conto No.` from the heading row** — the
+  account number survives only in the preamble — and adds a `Saldo` column. Its
+  only recognisable heading is the booking date, so `Erfassungsdatum` /
+  `Data registrazione` / `Registration date` all count as signatures; with only
+  the account-number headings listed, the Italian file was rejected while its
+  German twin was accepted.
 
 ## Fixtures
 
-Synthetic, in the Italian variant, with a charge line and a reference line.
+Synthetic, in the Italian variant, with a charge line and a reference line. The
+newer Italian layout is covered by an inline fixture in the tests.
