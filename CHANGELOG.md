@@ -1,6 +1,115 @@
 # Release Notes
 
-## [Unreleased](https://github.com/Kokonut-ch/SwissBankCsvParser/compare/v0.1.2...main)
+## [Unreleased](https://github.com/Kokonut-ch/SwissBankCsvParser/compare/v0.2.0...main)
+
+## [v0.2.0](https://github.com/Kokonut-ch/SwissBankCsvParser/releases/tag/v0.2.0) - 2026-07-23
+
+Every profile was re-audited against the source it was derived from: the open-source import
+apps published by Banana.ch, this time including their real test files, not only their
+documentation. The audit found one pattern, repeated: a language or layout variant that
+really exists was not covered, and the failure was silent — the file either fell through to
+the generic reader, which reads card signs backwards, or parsed to zero rows without a
+warning. Everything below was reproduced with upstream's own sample files before being
+fixed, and each fix ships with the fixture that would have caught it.
+
+### Files that were read wrong now read right
+
+- **Cornèrcard in German and Italian.** The profile's gate was three literal English
+  headings, so `Datum;Beschreibung;Karte;Währung;Betrag;Status` fell to the generic reader
+  and every purchase came back as income. The gate is now the same three columns as
+  lexicon terms, one rule for all three languages, with a fixture per language.
+- **Swisscard's other layout, and its Italian currency.** Two real layouts exist; the 2023
+  one has no `Registered Category` heading, which was the profile's only signature — same
+  silent fall-through, same inverted signs. The debit/credit word column, unique to
+  Swisscard, now signs the file too. Italian files also lost their currency: `Valuta` is
+  currency in this file, value date in the shared vocabulary, and the profile now says so.
+  The fixtures were re-cut to the real column sets — twelve columns, not eight — including
+  a pending foreign-currency row with no settled amount, and a line where the debit/credit
+  word contradicts the sign, proving the sign wins.
+- **Cornèr Banca's 2024 layout.** It drops `Conto No.` from the heading row, and only the
+  German variant carried another recognised signature — the Italian file was rejected
+  outright. Each language now has one: `Erfassungsdatum`, `Registration date`, and for
+  Italian the `Dettaglio` column, which is Cornèr's alone. (Its date heading would have
+  collided with EFG, which prints the same one.)
+- **Yuh's real dates.** The export prints `dd/mm/yyyy` with slashes; the profile knew only
+  dots, from an outdated upstream comment. Detection succeeded and every row was then
+  silently dropped — detection never consults the date formats, so nothing warned. Slashed
+  dates are now read.
+- **TWINT in English.** The English report prints `State` where the German prints
+  `Status`, and a `Failed` line still carries an amount. The word was missing from the
+  vocabulary, so `extras` came back empty and a failed payment was indistinguishable from
+  money cashed. `State` is now a status label, and the English fixture carries a `Failed`
+  line to keep it that way.
+- **PostFinance's English card holder.** The real label is `Card owner:`, not
+  `Card holder:`; the fixture had copied the code's wrong guess, which hid the miss. The
+  holder no longer comes back null on English exports.
+- **UBS in Italian, since 2024.** The booking date is now labelled
+  `Data di contabilizzazione`; unrecognised, the column was invisible and the row date
+  silently fell back to the trade date — the same file in German or French kept the
+  booking date. Both Italian labels are read now. The date rule itself is unchanged and
+  now honestly documented: the booking date is the row's date on every UBS layout because
+  it is the date the balance moves on — that is this package's rule, where UBS's own
+  modern import rules read the trade date alone.
+
+### Migros Bank's card profile was wrong twice
+
+The published sample of Migros Bank's own card export refutes both of the profile's
+assumptions. It carries `StateType` — the column the profile treated as Viseca's
+distinguishing mark and rejected — and it prints every purchase positive, issuer-style,
+where the profile took signs at face value. A real Migros Bank file was either claimed by
+`viseca.card` or rejected, and its purchases would have read as income.
+
+Both are fixed. The amounts flip, as they do for Viseca, Swisscard and Cornèrcard, and the
+two near-identical exports are told apart by the one heading that actually differs in the
+published samples: the trailing `Exchange Rate` column, present in Migros Bank's file and
+absent from Viseca's. Migros Bank signs on it; Viseca declares it disqualifying. That
+evidence base is one sample per bank, and both READMEs say so plainly.
+
+### `Row::$reference` for TWINT
+
+The `TWINT Order ID` — the identifier that ties a settlement line back to the terminal
+transaction, and what upstream books as each entry's external reference — now reaches
+`Row::$reference` instead of serving detection alone.
+
+### Fixtures that reconcile
+
+Four fixtures carried running balances that did not add up — invented numbers, precisely
+what a balance column exists to catch, and in every case the test suite asserted only the
+balances that happened to agree. BancaStato, ZKB and BEKB now chain, and every balance is
+asserted. BCV goes the other way: the only published sample leaves its balance column
+empty on every row, so the fixture now does too, and gains the real eight-line preamble.
+BancaStato also loses an invented detail line no real layout carries, and its `Tipo`
+column moves from the label into `extras`, the way Bank Cler's order type is reported.
+
+### Documentation set straight
+
+The Viseca README's sample row printed a purchase negative while the real export prints it
+positive — read literally, the sample inverted every amount — and its Migros Bank
+comparison called the two files "same signed amount" when the sign conventions are
+opposite. ZKB's claim that `Betrag Detail` survives in `Row::$raw` was untrue in the case
+that actually occurs: real exports print those per-item amounts on continuation lines,
+and folding keeps their text, not their cells — the breakdown is lost, the total intact,
+and the README now says which. Hypo Vorarlberg's "dot-separated ISO dates" exist in no
+attested sample; dashes do, and the dotted form is documented as a defensive tolerance and
+finally exercised by a test. Cler's French variant and newest-first delivery, Raiffeisen's
+deliberate continuation folding, and PostFinance's `Tag`/`Label` column naming are
+documented from the upstream evidence.
+
+**Upgrade notes:**
+
+- **`migrosbank.card` flips its signs.** Amounts from Migros Bank card files now come back
+  with the opposite sign relative to `v0.1.x`, matching the issuer-view convention the
+  published sample shows. A file shaped like the old synthetic fixture — no `StateType`,
+  no `Exchange Rate`, a shape no published evidence attests — now falls to the generic
+  reader instead of being claimed.
+- **BancaStato labels shrink.** The order type (`Bonifico`, `Pagamento`) leaves the label
+  and appears as `extras['Tipo']`.
+- **`extras` gains keys.** Any bank printing a `State` heading reports it (TWINT's English
+  export does); Cornèrcard's German and Italian files report `Karte`/`Carta` and `Stato`.
+  Code reading `extras` by key is unaffected; code comparing whole arrays will see the new
+  entries. TWINT rows also now carry a `reference`.
+- Files that previously parsed keep their dates, amounts and balances unchanged — except
+  where a value was demonstrably wrong and listed above.
 
 ## [v0.1.2](https://github.com/Kokonut-ch/SwissBankCsvParser/releases/tag/v0.1.2) - 2026-07-22
 
