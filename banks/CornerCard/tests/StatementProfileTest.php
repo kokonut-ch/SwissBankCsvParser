@@ -51,6 +51,40 @@ it('needs all three of Card, Currency and Status, not just one', function () {
         ->and(cornerCardParser()->supports(cornerCardFixture()))->toBeTrue();
 });
 
+it('reads the German statement, and still flips the sign', function () {
+    // Cornèrcard prints the same six columns in German — Datum;Beschreibung;
+    // Karte;Währung;Betrag;Status. With the gate written in English only, this
+    // file fell through to the generic reader, which takes signs at face value
+    // and turns every purchase into income.
+    $csv = (string) file_get_contents(__DIR__.'/../fixtures/statement-de.csv');
+
+    $file = cornerCardParser()->parse($csv);
+
+    expect($file->profile)->toBe('cornercard.statement')
+        ->and($file)->toHaveCount(3)
+        ->and($file->rows[0]->amount)->toBe('-39.64')
+        ->and($file->rows[0]->isDebit())->toBeTrue()
+        ->and($file->rows[1]->amount)->toBe('22.35')
+        ->and($file->rows[1]->isCredit())->toBeTrue()
+        ->and($file->rows[0]->extras['Status'] ?? null)->toBe('Verbucht');
+});
+
+it('reads the Italian statement, where Valuta is the currency', function () {
+    // Italian "Valuta" means currency, not value date — the shared lexicon
+    // deliberately lists it under ValueDate only, so this profile has to claim
+    // it for Currency explicitly.
+    $csv = (string) file_get_contents(__DIR__.'/../fixtures/statement-it.csv');
+
+    $file = cornerCardParser()->parse($csv);
+
+    expect($file->profile)->toBe('cornercard.statement')
+        ->and($file->rows[0]->currency)->toBe('CHF')
+        ->and($file->rows[0]->valueDate)->toBeNull()
+        ->and($file->rows[0]->amount)->toBe('-42.74')
+        ->and($file->rows[1]->amount)->toBe('45.50')
+        ->and($file->rows[0]->extras['Stato'] ?? null)->toBe('Registrata');
+});
+
 it('is not confused with the bank account statement of the same group', function () {
     $both = new SwissBankCsvParser(new ProfileRegistry([
         new StatementProfile,

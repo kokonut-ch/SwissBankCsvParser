@@ -102,9 +102,11 @@ abstract class HeaderDrivenProfile extends Profile
      * all.
      *
      * For banks identified by a combination rather than by any single unusual
-     * name: no one of Cornèr Card's `Card`, `Currency` and `Status` means much,
-     * but the three together alongside a date, a description and an amount mean
-     * exactly one file.
+     * name. Mind that these are literal headings, compared in one spelling: a
+     * bank that exports in several languages is better served by adding the
+     * combination to {@see requiredTerms()}, which resolves through the
+     * multilingual lexicon — see Cornèrcard, whose English-only heading gate
+     * silently sent the German and Italian files to the generic reader.
      *
      * @return list<string>
      */

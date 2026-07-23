@@ -259,7 +259,7 @@ whichever banks print them, under the heading the file itself uses:
 | Bank | Card | Status |
 | --- | --- | --- |
 | Swisscard | `Card number` | `Status` |
-| Cornèrcard | `Card` | `Status` |
+| Cornèrcard | `Card` / `Karte` / `Carta` | `Status` / `Stato` |
 | TWINT | — | `Status` (German), `State` (English) |
 | UBS (card) | `Numéro de carte` | — |
 | Yuh | `CARD NUMBER` | — |
