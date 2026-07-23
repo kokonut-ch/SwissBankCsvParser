@@ -27,9 +27,10 @@ Worth knowing:
   (`28/05/24`); four-digit years and dotted dates are accepted as well.
 - One signed amount column.
 - **The newer layout (2024) drops `Conto No.` from the heading row** — the
-  account number survives only in the preamble — and adds a `Saldo` column. Its
-  only recognisable heading is the booking date, so `Erfassungsdatum` /
-  `Data registrazione` / `Registration date` all count as signatures; with only
+  account number survives only in the preamble — and adds a `Saldo` column, so
+  each language needs its own signature: `Erfassungsdatum` for German,
+  `Registration date` for English, and the `Dettaglio` column for Italian (its
+  date heading, `Data registrazione`, is no use — EFG prints it too). With only
   the account-number headings listed, the Italian file was rejected while its
   German twin was accepted.
 

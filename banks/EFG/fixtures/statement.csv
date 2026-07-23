@@ -1,3 +1,3 @@
 Data registrazione;Data valuta;Transazione;Descrizione;Importo;DIV;Saldo
-31/10/2026;31/10/2026;Bonifico;Muster SA fattura 4471;-1145.00;;5467.92
-02/11/2026;02/11/2026;Accredito;Cliente Muster;411.04;;5878.96
+31/10/2026;31/10/2026;Bonifico;Muster SA fattura 4471;-1145.00;CHF;5467.92
+02/11/2026;02/11/2026;Accredito;Cliente Muster;411.04;CHF;5878.96

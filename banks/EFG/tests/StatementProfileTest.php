@@ -46,3 +46,13 @@ it('refuses an Italian statement without the DIV column', function () {
 
     expect(efgParser()->supports($csv))->toBeFalse();
 });
+
+it('reads the per-row currency from the DIV column', function () {
+    // The real export fills DIV on every row — its own import rules even
+    // require a three-letter code there to accept a line. With the column
+    // empty in the fixture, the currency was never exercised at all.
+    $rows = efgParser()->parse(efgFixture())->rows;
+
+    expect($rows[0]->currency)->toBe('CHF')
+        ->and($rows[1]->currency)->toBe('CHF');
+});

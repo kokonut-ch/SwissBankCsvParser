@@ -48,14 +48,16 @@ final class StatementProfile extends HeaderDrivenProfile
 
     protected function signatureHeadings(): array
     {
-        // The newer layout (2024) drops the account number from the heading row,
-        // leaving only its booking-date heading to recognise it by. Cornèr names
-        // that date "Erfassungsdatum" / "Data registrazione" / "Registration
-        // date" — one per language, all three listed so no language is rejected
-        // while its siblings are accepted.
+        // The newer layout (2024) drops the account number from the heading
+        // row, so each language needs something else to be recognised by. For
+        // German that is "Erfassungsdatum" and for English "Registration
+        // date"; the Italian file's date heading, "Data registrazione", is no
+        // use — EFG prints it too — but its "Dettaglio" column is Cornèr's
+        // own. Without a per-language signature, one language was rejected
+        // while its siblings were accepted.
         return [
             'Conto No.', 'Konto-Nr.', 'Compte No.', 'Account No.',
-            'Erfassungsdatum', 'Data registrazione', 'Registration date',
+            'Erfassungsdatum', 'Dettaglio', 'Registration date',
         ];
     }
 
