@@ -54,6 +54,32 @@ it('ignores the title rows above the heading row', function () {
     expect($file->rows[0]->label)->not->toContain('Elenco movimenti');
 });
 
+it('reads the newer Italian layout, whose heading row has no account number', function () {
+    // The 2024 layout drops "Conto No." from the heading row (it only survives
+    // in the preamble) and adds a balance column. Its only date heading is
+    // "Data registrazione" — without it among the signatures, the file was
+    // rejected outright while its German twin, carrying "Erfassungsdatum",
+    // was accepted.
+    $csv = ";;;;;;;\n"
+        .";Conto No.;123456/01 CHF;;;;;\n"
+        .";;;;;;;\n"
+        .";Elenco movimenti;;;;;;\n"
+        .";;;;;;;\n"
+        .";Data registrazione;Descrizione;Dettaglio;Data valuta;Importo;Saldo;\n"
+        .";28/05/24;Pagamento Muster SA;;28/05/24;-3862.65;212517.37;\n"
+        .";;Ns.rif: AB051345671520001;;;;;\n"
+        .";02/05/24;Accredito cliente;;02/05/24;800.0;216380.02;\n";
+
+    $file = cornerParser()->parse($csv);
+
+    expect($file->profile)->toBe('corner.statement')
+        ->and($file)->toHaveCount(2)
+        ->and($file->rows[0]->amount)->toBe('-3862.65')
+        ->and($file->rows[0]->balance)->toBe('212517.37')
+        ->and($file->rows[0]->label)->toBe('Pagamento Muster SA Ns.rif: AB051345671520001')
+        ->and($file->rows[1]->amount)->toBe('800.0');
+});
+
 it('reads the German variant, whose description column is "Bezeichnung"', function () {
     // Without that heading in the vocabulary the file still matched — through
     // its "Detail" column — and the real description was silently replaced by

@@ -64,9 +64,14 @@ it("prefers the bank's own reference over the generic one", function () {
 it('reads the value date and the balance', function () {
     $rows = zkbParser()->parse(zkbFixture())->rows;
 
+    // All three balances, so the chain stays checked: the file is newest
+    // first, and each older balance plus the newer amount must equal the
+    // newer balance.
     expect($rows[0]->date->format('Y-m-d'))->toBe('2026-02-11')
         ->and($rows[0]->valueDate?->format('Y-m-d'))->toBe('2026-02-10')
-        ->and($rows[0]->balance)->toBe('23708.77');
+        ->and($rows[0]->balance)->toBe('23951.80')
+        ->and($rows[1]->balance)->toBe('27153.80')
+        ->and($rows[2]->balance)->toBe('26910.77');
 });
 
 it('does not claim the old six-column layout, which names no bank', function () {

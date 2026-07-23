@@ -1,0 +1,16 @@
+"Generated on:";"2026.09.08";;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+"Date of:";"2026.09.01 (00:00)";"Amount of:";"";"to:";"";;;;;;;;;
+"To date:";"2026.09.07 (23:59)";"Commerce:";;;;;;;;;;;;
+"Type(s):";"";"terminal:";;;;;;;;;;;;
+"State:";"";;;;;;;;;;;;;
+"Order UUID:";;"Transaction reference:";;;;;;;;;;;;
+;;"Acquirer Transaction Reference:";;;;;;;;;;;;
+;;;;;;;;;;;;;;
+"Total reversals (CHF):";"Total credit (CHF):";"Total transaction amount (CHF):";"Total discount (CHF):";"Total transaction costs (CHF):";;;;;;;;;;
+"12.00";"0.00";"57.35";"0.00";"0.65";;;;;;;;;;
+;;;;;;;;;;;;;;
+"Date";"Time";"Type";"State";"Transaction amount (CHF)";"Discount (CHF)";"Transaction costs (CHF)";"Commerce";"TWINT terminal ID";"TWINT order ID";"Merchant transaction reference";"Acquirer Transaction Reference";"Name in the statement";"First name";"Last name"
+"2026.09.02";"11:38";"Payment";"Settled";"49.35";;"0.65";"Muster Shop";"l068";"2r0vrh8j-6o52";"MREF001";"2r0vrh8j-6o52";"Muster Shop";;
+"2026.09.04";"18:04";"Payment";"Failed";"20.00";;"0.00";"Muster Shop";"l068";"7c7a-2p68-p68j";"MREF002";"7c7a-2p68-p68j";"Muster Shop";;
+"2026.09.05";"12:56";"Reversal";"Settled";"-12.00";;"0.00";"Muster Shop";"l068";"9x9x-1a2b-3c4d";"MREF003";"9x9x-1a2b-3c4d";"Muster Shop";;

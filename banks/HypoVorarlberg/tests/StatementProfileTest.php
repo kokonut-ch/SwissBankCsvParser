@@ -33,11 +33,23 @@ it('reads comma decimals and German thousands', function () {
         ->and($rows[2]->amount)->toBe('1240.55');
 });
 
-it('reads dot-separated ISO dates', function () {
+it('reads ISO dates', function () {
     $rows = hypoParser()->parse(hypoFixture())->rows;
 
     expect($rows[0]->date->format('Y-m-d'))->toBe('2026-12-31')
         ->and($rows[0]->valueDate?->format('Y-m-d'))->toBe('2026-12-31');
+});
+
+it('tolerates the dotted ISO date form, though no real export attests it', function () {
+    // Every published sample uses dashes. The dotted form is kept as a
+    // defensive tolerance — this is the test that actually exercises it.
+    $csv = "IBAN;Auszugsnummer;Buchungsdatum;Waehrung;Betrag;Buchungstext\n"
+        ."AT611904300234573201;12;2026.12.31;EUR;-40,51;Abschluss\n";
+
+    $rows = hypoParser()->parse($csv)->rows;
+
+    expect($rows[0]->date->format('Y-m-d'))->toBe('2026-12-31')
+        ->and($rows[0]->amount)->toBe('-40.51');
 });
 
 it('takes the IBAN and the currency from their columns', function () {

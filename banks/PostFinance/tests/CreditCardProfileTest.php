@@ -76,8 +76,8 @@ it('reads the English card statement', function () {
 });
 
 it('flips the printed sign in every language', function (string $fixture) {
-    // The card statement prints a purchase positive, because it is what the
-    // holder owes. Every language does, and every one must come back negative.
+    // The debit column already says the direction, so the printed sign is
+    // discarded — a debit comes back negative regardless of what was printed.
     $rows = postFinanceCardParser()->parse(postFinanceCardFixture($fixture))->rows;
 
     expect($rows[0]->isDebit())->toBeTrue()

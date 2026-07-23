@@ -59,6 +59,7 @@ final class SettlementProfile extends HeaderDrivenProfile
                 'Betrag Transaktion', 'Montant de la transaction', 'Transaction amount',
             ],
             Term::Description->value => ['Typ', 'Type', 'Tipo'],
+            Term::Reference->value => ['TWINT Order ID', 'TWINT order ID', 'ID de commande TWINT'],
         ];
     }
 

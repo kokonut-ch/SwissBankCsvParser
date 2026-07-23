@@ -1,0 +1,4 @@
+Data transazione,Descrizione,Commerciante,Numero di carta,Valuta,Importo,Valuta estera,Importo Estero,Debito/Credito,Stato,Categoria commerciante,Categoria Registrata
+12.09.2026,MUSTER SHOP LUGANO,Muster Shop,11111111111111,CHF,20.85,,,Addebito,In sospeso,Shopping,DEPARTMENT STORES
+12.09.2026,MUSTER SHOP ONLINE,Muster Shop,11111111111111,,,EUR,54.89,Addebito,In sospeso,Servizi,COMPUTER SOFTWARE STORES
+10.09.2026,RISTORANTE DEL PONTE,Ristorante del Ponte,11111111111111,CHF,-15.00,,,Accredito,Contabilizzata,,"EATING PLACES, RESTAURANTS"

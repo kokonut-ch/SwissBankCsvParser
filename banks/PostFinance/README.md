@@ -23,8 +23,9 @@ Worth knowing:
   direction, so the printed sign is discarded — otherwise the sign would flip twice.
 - **The currency is in the amount heading**, not only in the preamble: `Crédit en CHF`.
   That is where a foreign-currency account announces itself.
-- The `Label` column is a customer-defined tag. It is not in the shared vocabulary, so it
-  is ignored; the cell is still in `Row::$raw`.
+- The customer-defined tag column is not in the shared vocabulary, so it is ignored; the
+  cell is still in `Row::$raw`. The real exports name it `Label` in German and French, and
+  `Tag` in Italian and English.
 
 ## `postfinance.creditcard` — credit card statement
 
@@ -37,15 +38,16 @@ Compte de carte:;0000 0000 0000 0001;;;;
 Titulaire de la carte:;JEAN DUPONT;;;;
 
 Période de facturation;Date d'écriture;Date d'achat;Détails de comptabilisation;Crédit en CHF;Débit en CHF
-Période comptable en cours;31.10.2026;28.10.2026;Achat Boutique;;45.9
+Période comptable en cours;31.10.2026;28.10.2026;Achat Boutique;;-45.9
 ```
 
 Worth knowing:
 
 - **The account is a card number, not an IBAN.** `Account::$iban` stays null and the number
   is reported as printed, masking included.
-- **Debits are printed positive here**, unlike the account statement. Neither profile cares,
-  which is the point of taking the direction from the column.
+- **Debits are printed negative here too**, same as the account statement. Either way the
+  column already says the direction, which is the point of taking the sign from the column
+  rather than from what was printed.
 - This format and the account statement are laid out almost identically. What separates
   them is the description heading, which is why both profiles pin theirs with
   `termLabels()` instead of relying on the shared vocabulary.

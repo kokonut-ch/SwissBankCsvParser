@@ -49,23 +49,24 @@ it('is told apart from the near-identical Migros Bank card export', function () 
         dirname(__DIR__, 2).'/MigrosBank/fixtures/card.csv',
     );
 
-    // The two files differ by one heading: StateType against CardId. Each
-    // profile signs on its own, and neither claims the other's file.
+    // Both files carry CardId and StateType; the one difference is Migros
+    // Bank's trailing exchange-rate column. Migros Bank signs on it, this
+    // profile excludes it, and neither claims the other's file.
     expect($both->detect(visecaFixture())->count())->toBe(1)
         ->and($both->detect(visecaFixture())->best()?->profile)->toBe('viseca.card')
         ->and($both->detect($migros)->count())->toBe(1)
         ->and($both->detect($migros)->best()?->profile)->toBe('migrosbank.card');
 });
 
-it('wins over Migros Bank on the real header, which carries both CardId and StateType', function () {
+it('keeps the real header, which carries both CardId and StateType', function () {
     $both = new SwissBankCsvParser(new ProfileRegistry([
         new CardProfile,
         new MigrosCardProfile,
     ]));
 
-    // Banana documents Viseca's own export as carrying CardId *and* StateType.
-    // Signing on what is present cannot separate the two banks — Migros Bank has
-    // to declare StateType as disqualifying.
+    // Banana documents Viseca's own export as carrying CardId *and* StateType —
+    // and no exchange-rate column. Signing on what is present cannot separate
+    // the two banks; only that absence does.
     $csv = 'TransactionId;CardId;Date;ValutaDate;Amount;Currency;MerchantName;MerchantPlace;'
         ."MerchantCountry;StateType;Details\n"
         ."TX0000123;XXXX0001;2026-09-15;2026-09-16;105.45;CHF;Muster Shop;Lausanne;CH;Booked;Card payment\n";

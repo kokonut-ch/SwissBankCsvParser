@@ -1,5 +1,5 @@
 "Datum";"Buchungstext";"Zahlungszweck";"Whg";"Betrag Detail";"ZKB-Referenz";"Referenznummer";"Belastung CHF";"Gutschrift CHF";"Valuta";"Saldo CHF";"Zahlungszweck";"Details"
-"11.02.2026";"Einkauf";"";"";"";"L123456789";"";"3202.00";"";"10.02.2026";"23708.77";"";""
-"10.02.2026";"Gutschrift Auftraggeber";"";"";"";"l987654321";"";"";"243.03";"10.02.2026";"27910.77";"l987654321 PAYOUT";"Herr Muster, Zürich"
+"11.02.2026";"Einkauf";"";"";"";"L123456789";"";"3202.00";"";"10.02.2026";"23951.80";"";""
+"10.02.2026";"Gutschrift Auftraggeber";"";"";"";"l987654321";"";"";"243.03";"10.02.2026";"27153.80";"l987654321 PAYOUT";"Herr Muster, Zürich"
 "09.02.2026";"Lastschrift: Grundversicherung";"";"";"";"6607010306680000";"";"1'023.00";"";"09.02.2026";"26'910.77";"";""
 "";"Grundversicherung Muster AG";"";"";"";"";"";"";"";"";"";"";"Rechnung Nr. 4471"

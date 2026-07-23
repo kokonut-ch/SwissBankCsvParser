@@ -11,10 +11,13 @@ use Kokonut\SwissBankCsvParser\Profiles\HeaderDrivenProfile;
 /**
  * Banca dello Stato del Cantone Ticino account statement.
  *
- * Italian throughout, with separate debit and credit columns and an external
- * reference of its own. Bookings are followed by a line spelling out the
- * original amount and the charges — folded back into the row above, as
- * elsewhere.
+ * Italian throughout, with separate debit and credit columns, an external
+ * reference of its own — `Rif.Esterno`, the signature — and an order type
+ * (`Tipo`) reported as an extra, the way Bank Cler's `Tipo di ordine` is.
+ *
+ * The bank's newer layouts number their orders (`Numero di ordine`) instead of
+ * referencing them; those carry no signature here and are deliberately left to
+ * the generic reader.
  */
 final class StatementProfile extends HeaderDrivenProfile
 {
@@ -41,8 +44,11 @@ final class StatementProfile extends HeaderDrivenProfile
     protected function termLabels(): array
     {
         return [
-            Term::Description->value => ['Testo di contabilizzazione', 'Tipo'],
+            Term::Description->value => ['Testo di contabilizzazione'],
             Term::Reference->value => ['Rif.Esterno', 'Rif. Esterno'],
+            // Plain "Tipo" is not in the shared vocabulary; here it is the
+            // order type, and belongs in extras rather than in the label.
+            Term::TransactionType->value => ['Tipo'],
         ];
     }
 

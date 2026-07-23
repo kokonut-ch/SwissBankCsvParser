@@ -40,7 +40,10 @@ final class StatementProfile extends HeaderDrivenProfile
 
     protected function dateFormats(): array
     {
-        return ['d.m.Y', 'Y-m-d'];
+        // The bank's own import rules validate dd/mm/yyyy with slashes, and
+        // the published sample prints them that way. Dotted dates appear only
+        // in older documentation, kept in case both conventions exist.
+        return ['d/m/Y', 'd.m.Y', 'Y-m-d'];
     }
 
     protected function termLabels(): array

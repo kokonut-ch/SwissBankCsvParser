@@ -1,0 +1,3 @@
+Data transazione,Descrizione,Numero di carta,Valuta,Importo,Debito/Credito,Stato,Categoria
+"01.05.2026","MUSTER SHOP LUGANO","3776 61**** *0254","CHF","39.00","Addebito","Registrata","SHOPPING"
+"29.04.2026","RIMBORSO MUSTER SHOP","3776 61**** *0254","CHF","-163.60","Accredito","Registrata","SHOPPING"

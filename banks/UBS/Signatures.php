@@ -19,15 +19,23 @@ trait Signatures
      *
      * UBS prints both, and prints the trade date in the earlier column — so
      * reading left to right binds the row's date to the wrong one whenever the
-     * two differ, which on a settled transaction they do. The bank's own import
-     * rules take the booking date and fall back to the trade date only when it
-     * is empty; that order is reproduced here, and honoured because the profile
-     * declares this term joinable.
+     * two differ, which on a settled transaction they do. Booking-first is this
+     * package's own rule, not the bank's: UBS's import rules for the wide
+     * portfolio export take booking-then-trade, but those for the modern
+     * e-banking exports read the trade date alone. Here the row date is the
+     * date the bank booked the line on every layout, as everywhere else in
+     * this package — it is the date the balance column moves on — with the
+     * trade date as the fallback, honoured because the profile declares this
+     * term joinable.
+     *
+     * "Data di contabilizzazione" is the Italian booking date since about
+     * 2024; "Data di registrazione" the wording before it.
      *
      * @var list<string>
      */
     private const array BOOKING_DATE_LABELS = [
-        'Buchungsdatum', 'Date de comptabilisation', 'Data di registrazione', 'Booking date',
+        'Buchungsdatum', 'Date de comptabilisation', 'Data di registrazione',
+        'Data di contabilizzazione', 'Booking date',
         'Abschluss', 'Abschlussdatum', 'Date de transaction', "Data dell'operazione",
         "Date de l'opération", 'Trade date',
     ];

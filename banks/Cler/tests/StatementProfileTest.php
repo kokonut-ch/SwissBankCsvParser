@@ -46,6 +46,24 @@ it('keeps the order type as an extra', function () {
     expect($rows[0]->extras)->toBe(['Tipo di ordine' => 'Pagamento in Svizzera']);
 });
 
+it('reads the French variant, which has no value date column', function () {
+    // The real export (test/testcases/csv_clerbank_example_format1_CHF_20251002.csv
+    // upstream) drops "Date valeur" entirely in French — booking date, order type,
+    // label, debit, credit, balance, and nothing else.
+    $csv = "Date de comptabilisation;Type d'ordre;Libellé;Montant débité (CHF);Montant crédité (CHF);Solde (CHF)\n"
+        ."05.11.2026;Paiement en Suisse;Boutique Muster;50.00;;5417.92\n"
+        ."03.11.2026;Virement de compte;Virement client;;200.00;5467.92\n";
+
+    $file = clerParser()->parse($csv);
+
+    expect($file->profile)->toBe('cler.statement')
+        ->and($file->account->currency)->toBe('CHF')
+        ->and($file->rows[0]->amount)->toBe('-50.00')
+        ->and($file->rows[0]->isDebit())->toBeTrue()
+        ->and($file->rows[1]->amount)->toBe('200.00')
+        ->and($file->rows[1]->isCredit())->toBeTrue();
+});
+
 it('refuses a statement without an order type column', function () {
     $csv = "Data di registrazione;Testo;Importo di addebito (CHF);Importo di accredito (CHF)\n"
         ."31.10.2026;Test;11.32;\n";

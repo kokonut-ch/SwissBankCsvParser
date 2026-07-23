@@ -15,14 +15,17 @@ AT61…;12;2026.12.31;2026.12.31;2026-12-31-21.35.45.616362;REF0001;EUR;-40,51;A
 ```
 
 By far the most detailed export this package reads: SEPA mandate and creditor
-identifiers, the counterparty's name, BIC and account, fee information, two kinds
-of category, a microsecond timestamp on every movement. Only what the neutral
-model has a field for is mapped — everything else survives in `Row::$raw`.
+identifiers, the counterparty's name, BIC and account, fee information, three
+kinds of category (`Kategorie`, `Bestandskategorie`, `Umsatzkategorie`), a
+microsecond timestamp on every movement. Only what the neutral model has a field
+for is mapped — everything else survives in `Row::$raw`.
 
-Two Austrian habits:
+One Austrian habit and one tolerance:
 
 - **Comma decimals with dot thousands**: `-40,51`, `1.240,55`.
-- **Dot-separated ISO dates**: `2026.12.31`.
+- **ISO dates with dashes**: `2026-12-31` — the only form the bank's published
+  samples attest. The dotted form (`2026.12.31`) is accepted defensively but
+  has not been observed in a real export.
 
 The amount is signed the ordinary way: negative is money out.
 

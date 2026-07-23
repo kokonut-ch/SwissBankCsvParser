@@ -24,23 +24,26 @@ it('reads a BCV statement', function () {
         ->and($file)->toHaveCount(2);
 });
 
-it('ignores the title row above the heading row', function () {
+it('ignores the whole preamble above the heading row', function () {
     $rows = bcvParser()->parse(bcvFixture())->rows;
 
-    // "Transactions list;;;;;45950.98" precedes the real headings and must not
-    // be read as one of them.
+    // Eight lines — the title row, the account number and holder, empty
+    // "Balance :" and "Curr. :" labels — precede the real headings, and none
+    // of them is a booking.
     expect($rows[0]->label)->toBe('Paiement fournisseur Muster SA')
         ->and($rows[1]->label)->toBe('Virement client');
 });
 
-it('signs from the column and reads dates and balances', function () {
+it('signs from the column and reads Swiss thousands and dates', function () {
     $rows = bcvParser()->parse(bcvFixture())->rows;
 
-    expect($rows[0]->amount)->toBe('-1350')
+    // The Balance column is empty on every row of the published sample, so the
+    // balance is honestly null rather than invented.
+    expect($rows[0]->amount)->toBe('-1350.00')
         ->and($rows[0]->date->format('Y-m-d'))->toBe('2026-09-30')
         ->and($rows[0]->valueDate?->format('Y-m-d'))->toBe('2026-09-30')
-        ->and($rows[0]->balance)->toBe('44600.98')
-        ->and($rows[1]->amount)->toBe('4250');
+        ->and($rows[0]->balance)->toBeNull()
+        ->and($rows[1]->amount)->toBe('4250.00');
 });
 
 it('refuses a statement that does not call its description column "Transactions"', function () {

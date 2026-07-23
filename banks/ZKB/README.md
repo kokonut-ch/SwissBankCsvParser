@@ -27,8 +27,12 @@ Worth knowing:
 - `ZKB-Referenz` wins over the `Referenznummer` column beside it, which is
   usually empty.
 - `Betrag Detail` is the per-item amount of a collective booking. It is not read
-  as the row's amount — the row's own debit or credit column is — but it stays in
-  `Row::$raw`.
+  as the row's amount — the collective's own debit or credit column carries the
+  total. Mind the fine print: in real exports those per-item amounts sit on the
+  *continuation lines*, and folding a continuation into the booking above keeps
+  its text but not its cells — so the per-item breakdown is **lost**. Only a
+  `Betrag Detail` printed on the dated line itself would survive in `Row::$raw`,
+  and no known export prints one there. The total is always intact.
 
 ## What this profile deliberately does not claim
 

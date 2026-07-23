@@ -52,8 +52,10 @@ final class StatementProfile extends HeaderDrivenProfile
      * "ZKB-Referenz" and nothing else. "Betrag Detail" looks tempting — it is
      * the per-item amount of a collective booking — but Luzerner Kantonalbank
      * prints a column by that name too, so signing on it would have this
-     * profile claiming LUKB's statements. Every ZKB layout that carries
-     * "Betrag Detail" carries "ZKB-Referenz" as well, so nothing is lost.
+     * profile claiming LUKB's statements. Every layout this profile claims
+     * carries "ZKB-Referenz"; the one exception, a 2009 seven-column layout
+     * with "Betrag Detail" and no reference column, is left to the generic
+     * reader along with the six-column layout the class doc describes.
      */
     protected function signatureHeadings(): array
     {
