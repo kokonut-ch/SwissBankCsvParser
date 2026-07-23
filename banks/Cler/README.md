@@ -19,6 +19,14 @@ Ordinary in every respect but two:
   same way.
 - **Every row is classified by an order type** (`Tipo di ordine`, `Type d'ordre`),
   which is what identifies the file. It is kept as an extra.
+- **The French variant drops the value date column entirely** — `Date de
+  comptabilisation;Type d'ordre;Libellé;Montant débité (CHF);Montant crédité
+  (CHF);Solde (CHF)`, nothing else. `Term::ValueDate` is optional, so the
+  profile reads it without complaint; `Row::$valueDate` is simply null.
+- **Real exports are delivered newest first.** The upstream import app
+  explicitly `.reverse()`s the rows before booking them; this package never
+  reorders rows, by design — callers get the file in the order it was handed
+  to them.
 
 ## Fixtures
 

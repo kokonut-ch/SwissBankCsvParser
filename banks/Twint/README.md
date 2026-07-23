@@ -22,6 +22,8 @@ Worth knowing:
 - Dates are dot-separated ISO — `2026.11.01` — with the time in its own column.
 - The currency travels in brackets on the amount heading.
 - `TWINT Terminal ID` and `TWINT Order ID` identify the file beyond doubt.
+- `TWINT Order ID` also becomes `Row::$reference` — it is the one identifier
+  that ties a settlement line back to the terminal transaction.
 - **The English report prints `State` where the German one prints `Status`**, and
   a `Failed` line still carries an amount. The state reaches `extras` under the
   heading the file uses — filter on it before counting a line as money cashed.

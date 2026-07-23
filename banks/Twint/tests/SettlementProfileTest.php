@@ -71,6 +71,22 @@ it('keeps the status of the German report in extras', function () {
     expect($rows[0]->extras['Status'] ?? null)->toBe('Erfolgreich');
 });
 
+it('exposes the TWINT Order ID as the row reference', function () {
+    $rows = twintParser()->parse(twintFixture())->rows;
+
+    expect($rows[0]->reference)->toBe('2r0vrh8j-6o52')
+        ->and($rows[1]->reference)->toBe('7c7a-2p68-p68j');
+});
+
+it('exposes the TWINT order ID as the row reference in the English report', function () {
+    $csv = (string) file_get_contents(__DIR__.'/../fixtures/settlement-en.csv');
+
+    $rows = twintParser()->parse($csv)->rows;
+
+    expect($rows[0]->reference)->toBe('2r0vrh8j-6o52')
+        ->and($rows[1]->reference)->toBe('7c7a-2p68-p68j');
+});
+
 it('refuses a file without a TWINT identifier', function () {
     $csv = "\"Datum\";\"Typ\";\"Betrag Transaktion (CHF)\"\n\"2026.11.01\";\"Zahlung\";\"49.35\"\n";
 

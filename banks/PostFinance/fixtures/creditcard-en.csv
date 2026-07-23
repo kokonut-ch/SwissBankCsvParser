@@ -3,8 +3,8 @@ Card:;XXXX XXXX XXXX 0001 PostFinance Visa;;;;
 Card owner:;JOHN SMITH;;;;
 Booking type:;All;;;;
 
-Billing period;Booking date;Purchase date;Booking details;Credit in CHF;Debit in CHF
-Current billing period;31.10.2026;28.10.2026;Purchase Boutique;;45.9
+Invoicing period;Booking date;Purchase date;Booking details;Credit in CHF;Debit in CHF
+Current billing period;31.10.2026;28.10.2026;Purchase Boutique;;-45.9
 30.09.2026 − 27.10.2026;05.10.2026;03.10.2026;Order refund;20;
 Disclaimer:;;;;;
 The content of this document was generated from the customer filter settings.;;;;;

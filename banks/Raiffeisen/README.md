@@ -22,13 +22,21 @@ Worth knowing:
   column entirely, and then the file names no account at all.
 - **Bookings spill onto the next line.** The continuation carries nothing but
   more description, and that is usually where the counterparty is named. Those
-  lines are folded into the row above rather than discarded.
+  lines are folded into the row above rather than discarded — this is a
+  deliberate choice, not a mirror of the format: the bank's own historical
+  import rules (the formats current up to end of 2018) simply threw these
+  continuation lines away. Folding them keeps the counterparty name that would
+  otherwise be lost.
 - **The amount column is signed** and taken at face value.
 - `Text` and `Details` are both descriptions and are joined.
 
 The profile only matches when `Credit/Debit Amount` is present. Every other
 column it uses is ordinary enough to belong to any bank, so without that heading
 there would be nothing to justify claiming the file.
+
+The very first format Raiffeisen shipped (2008, no heading row at all) is not
+recognised here; a file like that falls through to the generic reader, and
+that is an accepted gap rather than an oversight.
 
 ## Fixtures
 
