@@ -6,3 +6,9 @@ parameters:
     excludePaths:
         - banks/*/tests/*
     tmpDir: build/phpstan
+    # Larastan boots the Testbench application in every worker, and each boot
+    # may rewrite the same bootstrap/cache/services.php. On Windows, concurrent
+    # workers fail on that rename ("Access is denied"), as they started to once
+    # src/ and banks/ grew past 60 files. One process costs under a second here.
+    parallel:
+        maximumNumberOfProcesses: 1
