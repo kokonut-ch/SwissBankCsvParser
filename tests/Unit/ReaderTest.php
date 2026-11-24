@@ -18,7 +18,41 @@ it('picks the delimiter that yields the most consistent table', function (string
         "date;text;amount\n01.01.2026;Paiement, frais, divers;10\n01.02.2026;Autre, chose;20\n",
         ';',
     ],
+    // One line that splits wide on the comma does not outweigh a whole table
+    // that agrees on the semicolon: 10 × 1 against 3 × 4.
+    'one comma-heavy line in a semicolon file' => [
+        "date;text;amount\n01.01.2026;a, b, c, d, e, f, g, h, i, j;10\n02.01.2026;Paiement;20\n03.01.2026;Autre;30\n",
+        ';',
+    ],
 ]);
+
+it('weighs a short table above a long preamble', function () {
+    // Seven two-cell "Label:";"value" lines, then a table of five six-column
+    // lines whose descriptions and decimal-comma amounts are full of commas.
+    // Scoring only the most frequent row width crowned the preamble, 2 × 7 = 14,
+    // which the comma then beat with the stray splits of the table, 5 × 4 = 20.
+    // The table itself is worth 6 × 5 = 30.
+    $csv = <<<'CSV'
+    "Relevé de compte de:";"2026-01-01"
+    "Relevé de compte jusqu'au:";"2026-01-04"
+    ;
+    "Description:";"Compte courant"
+    ;
+    ;
+    ;
+    "Date";"Libellé";"Message";"Numéro de référence";"Montant";"Valeur"
+    "03.01.2026";"Exemple SA, Rue du Test 1, 1000 Lausanne, CH5604835012345678009";"";;"-15,50";"31.12.2025"
+    "03.01.2026";"Modèle Sàrl, Avenue de la Gare 2, 1003 Lausanne, CH9300762011623852957";"";;"-918,85";"03.01.2026"
+    "03.01.2026";"Assurance Exemple SA, Case postale 100, 1211 Genève, CH5604835012345678009";"";;"-2225,00";"03.01.2026"
+    "04.01.2026";"Exemple SA, Rue du Test 1, 1000 Lausanne, CH5604835012345678009";"";;"4500,00";"04.01.2026"
+    CSV;
+
+    $document = Reader::read($csv);
+
+    expect($document->delimiter)->toBe(';')
+        ->and($document->rows[7])->toHaveCount(6)
+        ->and($document->rows[8][4])->toBe('-15,50');
+});
 
 it('keeps quoted fields whole', function () {
     $document = Reader::read("a;b\n\"contains; a delimiter\";2\n");

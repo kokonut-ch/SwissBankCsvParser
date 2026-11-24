@@ -2,6 +2,52 @@
 
 ## [Unreleased](https://github.com/Kokonut-ch/SwissBankCsvParser/compare/v0.2.0...main)
 
+### Migros Bank account statements
+
+Only the card export had a profile, so a caller that restricted parsing to Migros Bank, once
+the user had named the bank, had every account statement refused. A new profile,
+`migrosbank.statement`, reads them in German, French and Italian.
+
+- **The current layout is identified confidently.** It is the one Swiss export in the
+  published samples to print a message column and a reference-number column together:
+  `Datum;Buchungstext;Mitteilung;Referenznummer;Betrag;[Saldo;]Valuta`, and its French and
+  Italian wordings. The label joins the booking text and the message; the reference number
+  reaches `Row::$reference`; the value date and the balance are read.
+- **Its preamble is read.** The period comes from `Kontoauszug von:` / `bis:` and their
+  French and Italian wordings, and a date that cannot be read leaves it `null` rather than
+  failing. The account comes from `Kontonummer / IBAN:`, which prints both on one line: the
+  IBAN when it is valid, otherwise the number. `Vertrag:` and the account designation stay
+  in `metadata`.
+- **The older four-column layout is read only once the bank is confirmed.**
+  `Datum;Buchungstext;Betrag;Valuta` is exactly what Valiant, acrevis, Schwyzer KB and
+  Nidwaldner KB print. The profile caps it at 0.25, below the generic reader's 0.30, so in
+  free detection such a file stays unidentified, and a parser restricted to Migros Bank's
+  profiles reads it.
+
+### A short table under a long preamble picks the right delimiter
+
+The delimiter was chosen on the most frequent row width alone. Migros Bank's French export
+prints seven two-cell preamble lines above a short table full of commas, decimal commas
+included, so the preamble won the count and the comma then beat the semicolon on the
+table's stray splits: the file was refused outright. Every row width is now weighed, and
+the largest block of agreeing rows wins. Across the 176 published sample files, that one
+file is the only one whose delimiter changes.
+
+### Shared vocabulary
+
+`Testo di registrazione` and `Message` are now description headings. Italian Migros Bank
+statements came back with every label empty.
+
+### The generic reader no longer reports an account designation as the holder
+
+`Bezeichnung:`, and `Description:` in French, are what the de-facto cantonal-bank preamble
+prints most often, and in every published sample the value is the kind of account:
+`Geschäftskonto`, `Kontokorrent`, `Betriebskredit`, `Compte courant CHF`. The holder's
+name sits on the unlabelled address lines below. Those labels, with `Désignation` and
+`Designazione`, no longer fill `Account::$holder`, which is now `null` for such files; the
+value is still in `metadata`. Labels that name a person (`Kontoinhaber`, `Titulaire`,
+`Intestatario`, `Account holder`) are still read.
+
 ## [v0.2.0](https://github.com/Kokonut-ch/SwissBankCsvParser/releases/tag/v0.2.0) - 2026-07-23
 
 Every profile was re-audited against the source it was derived from: the open-source import

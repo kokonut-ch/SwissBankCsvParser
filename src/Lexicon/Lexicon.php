@@ -59,9 +59,11 @@ final class Lexicon
                 'Mitteilung', 'Zahlungszweck', 'Verwendungszweck',
                 'Libellé', 'Description', 'Texte de notification', 'Détails',
                 'Détails de comptabilisation', 'Communication', 'Motif', 'Texte',
-                'Texte comptable',
+                'Texte comptable', 'Message',
                 'Descrizione', 'Testo di avviso', 'Dettagli', 'Dettaglio',
                 'Dettagli di contabilizzazione', 'Comunicazione', 'Causale', 'Testo',
+                // Migros Bank's Italian booking text, in both of its layouts.
+                'Testo di registrazione',
                 'Details', 'Detail', 'Notification text', 'Booking details', 'Payment purpose',
                 'Purpose',
                 // Banks that spread one description over several columns. All of

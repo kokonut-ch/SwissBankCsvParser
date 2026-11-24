@@ -1,0 +1,15 @@
+Kontoauszug bis: 04.09.2026 ;;;
+;;;
+Kontonummer: 123.456.78;;;
+Bezeichnung: Privatkonto;;;
+Saldo: CHF 12345.60;;;
+;;;
+Max Muster;;;
+Musterstrasse 1;;;
+8000 Zürich;;;
+;;;
+;;;
+Datum;Buchungstext;Betrag;Valuta
+04.09.26;Zahlungseingang Beispiel AG;1838.00;04.09.26
+02.09.26;Einkauf Muster Laden;-204.45;03.09.26
+31.08.26;Dauerauftrag Miete;-1450.00;31.08.26

@@ -97,8 +97,17 @@ final class Reader
     }
 
     /**
-     * Score = the most common column count, times how many rows agree on it.
-     * A delimiter that never splits anything scores zero.
+     * Score = the largest block of rows that agree on a column count, measured
+     * in cells: for each width, the width times how many rows have it, and the
+     * best of those. A delimiter that never splits anything scores zero.
+     *
+     * Weighing every width, rather than only the most frequent one, is what
+     * lets a short table beat a long preamble. Migros Bank's French export
+     * prints seven two-cell "Label:";"value" lines above five six-column ones,
+     * heading included, with a decimal comma in every amount: scoring the most
+     * frequent width alone crowned the preamble's 2 × 7 = 14, which the comma
+     * then beat with the stray splits of the descriptions. The table itself is
+     * worth 6 × 5 = 30.
      */
     private static function scoreDelimiter(string $sample, string $delimiter): int
     {
@@ -112,14 +121,13 @@ final class Reader
             }
         }
 
-        if ($counts === []) {
-            return 0;
+        $score = 0;
+
+        foreach ($counts as $width => $rows) {
+            $score = max($score, $width * $rows);
         }
 
-        $agreement = max($counts);
-        $width = (int) array_search($agreement, $counts, true);
-
-        return $width * $agreement;
+        return $score;
     }
 
     /** The first 50 lines are plenty to recognise the shape of a table. */
