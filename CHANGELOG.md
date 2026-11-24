@@ -80,6 +80,25 @@ them are now read. Across the 176 published sample files, only PostFinance's cha
   now identified as PostFinance. Their dates and amounts are unchanged, and their labels,
   which the generic reader left empty, are read.
 
+### Bank Cler: the German export, once the bank is confirmed
+
+Bank Cler published a German export in July 2026,
+`Buchungsdatum;Auftragsart;Text;Belastungsbetrag (CHF);Gutschriftsbetrag (CHF);Saldo (CHF)`.
+`cler.statement` signed only on the Italian, French and English order type headings, so a
+caller that restricted parsing to Bank Cler had that file refused.
+
+- **`cler.statement` reads the German layout**, with or without `Valutadatum`. The currency
+  comes from the bracketed heading, CHF, EUR or USD, as in the other languages; texts
+  quoted over several lines make one label; `Auftragsart` is kept as an extra.
+- **It never claims that layout in free detection.** Basler Kantonalbank, Bank Cler's
+  parent, exports exactly the same headings, so nothing in the file names the bank. The
+  profile caps it at 0.25, below the generic reader's 0.30: in free detection such a file
+  stays unidentified, and a parser restricted to Bank Cler reads it.
+- The German layout needs `Belastungsbetrag` and `Gutschriftsbetrag` beside `Auftragsart`,
+  which keeps Thurgauer Kantonalbank's export (`Belastung (CHF)`, `Gutschrift (CHF)`) out.
+- Across the 176 published sample files, only that German Cler sample changes: refused
+  once the bank is confirmed, it is now read with all its rows.
+
 ## [v0.2.0](https://github.com/Kokonut-ch/SwissBankCsvParser/releases/tag/v0.2.0) - 2026-07-23
 
 Every profile was re-audited against the source it was derived from: the open-source import

@@ -1,0 +1,7 @@
+Data di registrazione;Data valuta;Tipo di ordine;Testo;Importo di addebito (USD);Importo di accredito (USD);Saldo (USD)
+14.11.2026;14.11.2026;Pagamento all'estero;"Example Travel LLC
+Via Esempio 12
+6900 Lugano
+Fattura 2026/0042";980.50;;3019.50
+13.11.2026;13.11.2026;Accredito;"Sample Partners Ltd
+Rimborso spese";;4000.00;4000.00
