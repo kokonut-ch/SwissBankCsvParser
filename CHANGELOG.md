@@ -99,6 +99,26 @@ caller that restricted parsing to Bank Cler had that file refused.
 - Across the 176 published sample files, only that German Cler sample changes: refused
   once the bank is confirmed, it is now read with all its rows.
 
+### Swisscard in French
+
+Swisscard added a French export in November 2026, the twelve-column layout headed
+`Date transaction,Description,Commerçant,Numéro de carte,Monnaie,Montant,…,Débit/Crédit,Statut,Catégorie de commerçant,Catégorie enregistrée`.
+No profile knew `Date transaction` or `Catégorie enregistrée`, so the file was refused,
+in free detection and with the bank confirmed alike.
+
+- **`swisscard.statement` reads it**, identified confidently on `Catégorie enregistrée`,
+  with the issuer sign flipped as in the other languages: a purchase (`Débit`) is
+  negative, a card payment (`Crédit`) positive.
+- **`Numéro de carte`, `Statut` and `Catégorie enregistrée` reach `extras`**, like
+  their German, Italian and English counterparts. The settled `Monnaie` and `Montant`
+  are read, never the foreign pair beside them.
+- **`Débit/Crédit` signs the file too**, as `Debit/Kredit` does in German, for a French
+  file without the registered category.
+- Both French headings are claimed by the Swisscard profile, not added to the shared
+  vocabulary: no other profile changes.
+- Across the 176 published sample files, only that French sample changes: refused, it is
+  now read with all its rows, in free detection and once the bank is confirmed.
+
 ## [v0.2.0](https://github.com/Kokonut-ch/SwissBankCsvParser/releases/tag/v0.2.0) - 2026-07-23
 
 Every profile was re-audited against the source it was derived from: the open-source import

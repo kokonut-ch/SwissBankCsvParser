@@ -1,0 +1,4 @@
+Date transaction,Description,Commerçant,Numéro de carte,Monnaie,Montant,Monnaie étrangère,Montant étranger,Débit/Crédit,Statut,Catégorie de commerçant,Catégorie enregistrée
+"18.11.2026","MUSTER SHOP GENÈVE","Muster Shop","XXXX 0001","CHF","74.50","","","Débit","Comptabilisée","Achats","Shopping"
+"16.11.2026","BOULANGERIE DU LAC, PARIS","Boulangerie du Lac","XXXX 0001","CHF","23.15","EUR","24.00","Débit","Comptabilisée","Restaurants","Restaurants, Bar"
+"14.11.2026","VOTRE PAIEMENT - MERCI","","XXXX 0001","CHF","-1200.00","","","Crédit","Comptabilisée","Paiements",""
