@@ -5,6 +5,7 @@ One directory per bank. Each holds everything about that bank and nothing about 
 ```
 banks/PostFinance/
 ├── EFinanceProfile.php        one class per recognisable export format
+├── EFinance2010Profile.php
 ├── CreditCardProfile.php
 ├── LegacyStatementProfile.php
 ├── fixtures/                  synthetic sample files
@@ -99,6 +100,15 @@ protected function amountModel(): AmountModel
 
 Extend `PositionalProfile` only for a format that genuinely has no headings. It cannot be
 confident about anything, and it says so.
+
+**When another bank prints exactly the same file**, nothing in it names yours. A profile
+may still read such a layout, so that a caller who already knows the bank can, but must
+never claim it: cap its match at 0.25, below the generic reader's 0.30, so that in free
+detection the file stays unidentified, and it is read as your bank only by a parser
+restricted to it. The four-column `Kontonummer:` / `Bezeichnung:` / `Saldo:` statement
+that Migros Bank's older layout, Schaffhauser KB, Valiant, acrevis and others print is the
+usual case: its headings, preamble labels, date notations and cap are in
+`Generic/FourColumnStatement.php`, and `SHKB/` holds a profile that is nothing else.
 
 ### 4. Test it
 

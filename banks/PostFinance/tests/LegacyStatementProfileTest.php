@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use Kokonut\SwissBankCsvParser\Banks\PostFinance\LegacyStatementProfile;
 use Kokonut\SwissBankCsvParser\Detection\ProfileRegistry;
+use Kokonut\SwissBankCsvParser\Dto\Row;
 use Kokonut\SwissBankCsvParser\Dto\Warning;
 use Kokonut\SwissBankCsvParser\SwissBankCsvParser;
 
@@ -72,3 +73,34 @@ it('does not claim the five-column layout, whose columns sit elsewhere', functio
 
     expect(postFinanceLegacyParser()->supports($csv))->toBeFalse();
 });
+
+it('refuses a headed file whose columns sit elsewhere, rather than read the wrong ones', function () {
+    // PostFinance's 2010 export. Its English headings are not in the shared
+    // vocabulary, so it looks headerless, and by position its "Details" flag
+    // would be the credit: every row would come back as 2.00.
+    $csv = (string) file_get_contents(__DIR__.'/../fixtures/efinance-2010-en.csv');
+
+    expect(postFinanceLegacyParser()->supports($csv))->toBeFalse();
+});
+
+it('never reports the Details flag as an amount once every profile is in play', function () {
+    $file = (new SwissBankCsvParser)->parse((string) file_get_contents(__DIR__.'/../fixtures/efinance-2010-en.csv'));
+
+    expect($file->profile)->not->toBe('postfinance.legacy')
+        ->and(array_map(fn (Row $row) => $row->amount, $file->rows))
+        ->toBe(['0.00', '-45.00', '-131.55', '1100.00', '-44.95']);
+});
+
+it('refuses a file whose cells contradict the layout', function (string $row) {
+    // One bad line is enough: a layout that is wrong for one row may be wrong
+    // for the others in ways that still parse.
+    $csv = "15.03.26;Paiement loyer;;1200.00;15.03.26;3800.00\n".$row."\n";
+
+    expect(postFinanceLegacyParser()->supports($csv))->toBeFalse();
+})->with([
+    'a date in the debit column' => '16.03.26;Achat;;16.03.26;-45.00;3755.00',
+    'text in the credit column' => '16.03.26;Achat;CHF;45.00;16.03.26;3755.00',
+    'money in both directions' => '16.03.26;Achat;10.00;45.00;16.03.26;3755.00',
+    'a figure in the value-date column' => '16.03.26;Achat;;45.00;-45.00;3755.00',
+    'text in the balance column' => '16.03.26;Achat;;45.00;16.03.26;Solde',
+]);

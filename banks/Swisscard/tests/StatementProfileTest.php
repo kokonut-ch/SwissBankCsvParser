@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use Kokonut\SwissBankCsvParser\Banks\Swisscard\StatementProfile;
 use Kokonut\SwissBankCsvParser\Detection\ProfileRegistry;
+use Kokonut\SwissBankCsvParser\Dto\Row;
 use Kokonut\SwissBankCsvParser\SwissBankCsvParser;
 
 function swisscardParser(): SwissBankCsvParser
@@ -11,9 +12,25 @@ function swisscardParser(): SwissBankCsvParser
     return new SwissBankCsvParser(new ProfileRegistry([new StatementProfile]));
 }
 
-function swisscardFixture(): string
+function swisscardFixture(string $name = 'statement.csv'): string
 {
-    return (string) file_get_contents(__DIR__.'/../fixtures/statement.csv');
+    return (string) file_get_contents(__DIR__.'/../fixtures/'.$name);
+}
+
+/**
+ * Every fixture, with how many rows carry an amount.
+ *
+ * @return array<string, int>
+ */
+function swisscardLayouts(): array
+{
+    return [
+        'statement.csv' => 3,
+        'statement-it.csv' => 2,
+        'statement-fr.csv' => 3,
+        'statement-legacy-de.csv' => 2,
+        'statement-legacy-it.csv' => 2,
+    ];
 }
 
 it('reads a Swisscard statement', function () {
@@ -134,4 +151,96 @@ it('refuses a statement without the registered category column', function () {
     $csv = "Transaction date;Description;Currency;Amount\n13.11.2026;Shop;CHF;189.00\n";
 
     expect(swisscardParser()->supports($csv))->toBeFalse();
+});
+
+it('reads the French twelve-column layout', function () {
+    // Published upstream in November 2026. Its date and category headings,
+    // "Date transaction" and "Catégorie enregistrée", are Swisscard's own
+    // wording: without them the file was refused by every profile.
+    $file = swisscardParser()->parse(swisscardFixture('statement-fr.csv'));
+
+    expect($file->profile)->toBe('swisscard.statement')
+        ->and($file)->toHaveCount(3)
+        ->and($file->rows[0]->date->format('Y-m-d'))->toBe('2026-11-18')
+        ->and($file->rows[0]->label)->toBe('MUSTER SHOP GENÈVE');
+});
+
+it('flips the issuer sign on the French layout too', function () {
+    $rows = swisscardParser()->parse(swisscardFixture('statement-fr.csv'))->rows;
+
+    // A purchase ("Débit") is printed positive, the card payment ("Crédit")
+    // negative, exactly as in the other languages.
+    expect($rows[0]->amount)->toBe('-74.50')
+        ->and($rows[0]->isDebit())->toBeTrue()
+        ->and($rows[2]->amount)->toBe('1200.00')
+        ->and($rows[2]->isCredit())->toBeTrue();
+});
+
+it('takes the French currency and amount, never the foreign pair', function () {
+    // "Monnaie étrangère" and "Montant étranger" sit beside "Monnaie" and
+    // "Montant". Only whole headings match, so the settled CHF pair is read.
+    $rows = swisscardParser()->parse(swisscardFixture('statement-fr.csv'))->rows;
+
+    expect($rows[1]->currency)->toBe('CHF')
+        ->and($rows[1]->amount)->toBe('-23.15');
+});
+
+it('reports the card, the status and the registered category under their French headings', function () {
+    $rows = swisscardParser()->parse(swisscardFixture('statement-fr.csv'))->rows;
+
+    // The merchant category ("Catégorie de commerçant") is not the registered
+    // one and stays in $raw, as "Merchant Category" does in English. A card
+    // payment has no registered category, so the key is absent.
+    expect($rows[1]->extras)->toBe([
+        'Numéro de carte' => 'XXXX 0001',
+        'Statut' => 'Comptabilisée',
+        'Catégorie enregistrée' => 'Restaurants, Bar',
+    ])->and($rows[2]->extras)->toBe([
+        'Numéro de carte' => 'XXXX 0001',
+        'Statut' => 'Comptabilisée',
+    ]);
+});
+
+it('signs a French file on its debit/credit heading alone', function () {
+    // The 2023 layout's category heading is plain, so the word column is its
+    // only signature. The French spelling signs as the other three do.
+    $csv = "Date transaction,Description,Numéro de carte,Monnaie,Montant,Débit/Crédit,Statut,Catégorie\n"
+        ."13.11.2026,MUSTER SHOP,XXXX 0001,CHF,50.00,Débit,Comptabilisée,Shopping\n";
+
+    $rows = swisscardParser()->parse($csv)->rows;
+
+    expect($rows[0]->amount)->toBe('-50.00')
+        ->and($rows[0]->currency)->toBe('CHF');
+});
+
+it('identifies every layout in free detection', function (string $fixture) {
+    // The generic reader takes card signs at face value, so a Swisscard file it
+    // won would read every purchase as income.
+    $csv = swisscardFixture($fixture);
+    $report = (new SwissBankCsvParser)->detect($csv);
+    $file = (new SwissBankCsvParser)->parse($csv);
+
+    expect($report->best()?->profile)->toBe('swisscard.statement')
+        ->and($report->isConfident())->toBeTrue()
+        ->and($file->bank->key)->toBe('swisscard')
+        ->and(array_filter($file->rows, static fn (Row $row): bool => $row->amount !== null))
+        ->toHaveCount(swisscardLayouts()[$fixture]);
+})->with(array_keys(swisscardLayouts()));
+
+it('reads every fixture once the bank is confirmed', function (string $fixture) {
+    $file = swisscardParser()->parse(swisscardFixture($fixture));
+
+    expect($file->profile)->toBe('swisscard.statement')
+        ->and(array_filter($file->rows, static fn (Row $row): bool => $row->amount !== null))
+        ->toHaveCount(swisscardLayouts()[$fixture]);
+})->with(array_keys(swisscardLayouts()));
+
+it('has a line above for every fixture the bank ships', function () {
+    $fixtures = array_map(basename(...), glob(__DIR__.'/../fixtures/*.csv') ?: []);
+    sort($fixtures);
+
+    $listed = array_keys(swisscardLayouts());
+    sort($listed);
+
+    expect($fixtures)->toBe($listed);
 });

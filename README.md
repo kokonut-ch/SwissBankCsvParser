@@ -186,18 +186,19 @@ spreadsheet-formula injection into someone else's machine.
 
 | Bank | Formats | Verified against a real export |
 | --- | --- | --- |
-| PostFinance | e-finance account statement (2024+), credit card statement, legacy headerless statement | ✅ |
+| PostFinance | e-finance account statement (2024+, and its older layouts back to 2003), credit card statement (2022+), legacy headerless statement | ✅ |
 | UBS | account statement (split debit/credit), e-banking statement (signed amount), credit card statement | ✅ |
 | Raiffeisen | account statement, legacy statement | ✅ |
 | Zürcher Kantonalbank | account statement | ⬜ |
 | Banque Cantonale Vaudoise | account statement | ⬜ |
 | Berner Kantonalbank | account statement | ⬜ |
 | Banca dello Stato del Cantone Ticino | account statement | ⬜ |
-| Bank Cler | account statement | ⬜ |
+| Schaffhauser Kantonalbank | account statement (once the bank is confirmed) | ⬜ |
+| Bank Cler | account statement (its German layout once the bank is confirmed) | ⬜ |
 | Cornèr Banca | account statement | ⬜ |
 | Yuh | account statement | ⬜ |
 | neon | account statement | ⬜ |
-| Migros Bank | card transactions | ⬜ |
+| Migros Bank | account statement (its older four-column layout once the bank is confirmed), card transactions | ⬜ |
 | Viseca | card transactions | ✅ |
 | Swisscard | card statement | ⬜ |
 | Cornèrcard | card statement | ✅ |
@@ -213,9 +214,10 @@ with a **synthetic** reproduction, never the real file.
 
 The generic fallback reads statements from banks this package does not know yet, as long as
 they use ordinary column names in German, French, Italian or English, which most do. It
-picks up the account number, holder and currency from the header block when there is one,
-never outranks a bank that identifies itself, and always attaches a `GENERIC_PROFILE_USED`
-warning, so you can tell a guess from an identification.
+picks up the account number and currency from the header block when there is one, and the
+holder when a line is labelled as such, never outranks a bank that identifies itself, and
+always attaches a `GENERIC_PROFILE_USED` warning, so you can tell a guess from an
+identification.
 
 ## Some formats are deliberately left to the generic reader
 
@@ -224,11 +226,21 @@ and for those the generic reader is the correct answer rather than a stopgap.
 
 **There is, in practice, one de-facto Swiss cantonal-bank format.** A preamble of
 `Kontonummer:` / `Bezeichnung:` / `Saldo: CHF …`, then `Datum;Buchungstext;Betrag;Valuta`.
-Migros Bank, Valiant, Nidwaldner KB, Schwyzer KB, acrevis and Zuger KB all ship it, and
-nothing in any of those files says which one you are holding. A "Migros Bank" profile for
-that shape would attribute Valiant's statements to Migros Bank while sounding certain. The
-generic reader takes them instead, reads the preamble for the account number, holder and
-currency, and reports the bank as unknown.
+Valiant, Nidwaldner KB, Schwyzer KB, acrevis, Zuger KB, Schaffhauser KB and Migros Bank's
+older layout all ship it, and nothing in any of those files says which one you are
+holding. A profile claiming that shape for one bank would attribute the others' statements
+to it while sounding certain. The generic reader takes them instead, reads the preamble for the account
+number and currency, and reports the bank as unknown. The `Bezeichnung:` line names the
+kind of account ("Geschäftskonto", "Compte courant"), not its holder, and stays in
+`metadata`.
+
+Migros Bank's and Schaffhauser Kantonalbank's statement profiles still read that layout,
+but score it below the generic reader: it is read as one of those banks only when the
+caller restricts the parser to that bank's profiles, typically once the person who uploaded
+the file has named it. See [`banks/MigrosBank/README.md`](banks/MigrosBank/README.md) and
+[`banks/SHKB/README.md`](banks/SHKB/README.md). Bank Cler's German export is
+treated the same way, because it is heading for heading what Basler Kantonalbank exports:
+see [`banks/Cler/README.md`](banks/Cler/README.md).
 
 The same applies to Aargauische KB, Luzerner KB, BKB, BLKB, TKB, CIC, VZ Depotbank and
 Baloise Bank SoBa, whose exports differ from one another only in ways too fine to bet on,
@@ -241,9 +253,9 @@ after all, that is exactly the evidence needed to add a profile. See
 
 ## Card statements invert the sign
 
-Swisscard, Cornèrcard, Viseca and Migros Bank write their statements from the **issuer's**
-point of view: a purchase is printed positive, because it is what you owe, and a refund
-negative. Their profiles flip it, so that here as everywhere else a negative amount means
+Swisscard, Cornèrcard, Viseca and Migros Bank's card export write their statements from
+the **issuer's** point of view: a purchase is printed positive, because it is what you owe,
+and a refund negative. Their profiles flip it, so that here as everywhere else a negative amount means
 money left the cardholder.
 
 This is worth knowing even if you never touch those banks. It is why a card statement must

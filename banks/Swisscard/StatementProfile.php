@@ -36,6 +36,13 @@ use Kokonut\SwissBankCsvParser\Profiles\HeaderDrivenProfile;
  * terms. The Italian files are why {@see termLabels()} claims `Valuta` for the
  * currency: the shared lexicon lists that word under value date only, and
  * neither layout has a value-date column to collide with.
+ *
+ * The twelve-column layout also exists in French since November 2026. Its
+ * date and category headings, `Date transaction` and `Catégorie enregistrée`,
+ * are Swisscard's own wording and are claimed in {@see termLabels()} rather
+ * than in the shared lexicon: no other profile needs them, and the generic
+ * reader, which takes card signs at face value, is better off not recognising
+ * this file at all. Every other French heading is ordinary vocabulary.
  */
 final class StatementProfile extends HeaderDrivenProfile
 {
@@ -76,6 +83,8 @@ final class StatementProfile extends HeaderDrivenProfile
     {
         return [
             Term::Currency->value => [...Lexicon::labels(Term::Currency), 'Valuta'],
+            Term::BookingDate->value => [...Lexicon::labels(Term::BookingDate), 'Date transaction'],
+            Term::Category->value => [...Lexicon::labels(Term::Category), 'Catégorie enregistrée'],
         ];
     }
 
@@ -83,9 +92,10 @@ final class StatementProfile extends HeaderDrivenProfile
     {
         return [
             'Registered Category', 'Registrierte Kategorie', 'Categoria Registrata',
+            'Catégorie enregistrée',
             // The 2023 layout's only distinctive heading is the debit/credit
             // word column — the column whose values are deliberately not read.
-            'Debit/Credit', 'Debit/Kredit', 'Debito/Credito',
+            'Debit/Credit', 'Debit/Kredit', 'Debito/Credito', 'Débit/Crédit',
         ];
     }
 

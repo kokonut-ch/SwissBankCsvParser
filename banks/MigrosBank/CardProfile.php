@@ -23,8 +23,8 @@ use Kokonut\SwissBankCsvParser\Profiles\HeaderDrivenProfile;
  * is therefore the signature, and Viseca's profile excludes it.
  *
  * The three merchant columns plus `Details` make up the description, joined in
- * that order, which is how the file reads on screen. The bank's *account*
- * statement is deliberately not claimed — see this bank's README for why.
+ * that order, which is how the file reads on screen. The bank's account
+ * statements are {@see StatementProfile}'s.
  */
 final class CardProfile extends HeaderDrivenProfile
 {

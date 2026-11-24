@@ -1,0 +1,14 @@
+Numéro de compte:;0240 00254061.40;
+IBAN:;CH93 0076 2011 6238 5295 7;
+Du:;2026-07-20;
+Au:;2026-07-28;
+Solde initial:;7200.00;
+Solde final:;4708.10;
+Évaluation en:;CHF;
+Nombre de transactions dans cette période:;4;
+
+Date de transaction;Heure de transaction;Date de comptabilisation;Date de valeur;Devise;Débit;Crédit;Sous-montant;Solde;No de transaction;Description1;Description2;Description3;Notes de bas de page;
+2026-07-28;18:42:10;;2026-07-28;CHF;-12.40;;;4708.10;9999209BN1842101;"Boulangerie Muster,1003 Lausanne";"12345678-0 07/28, Paiement carte de débit";"Référence 1111111AA1111111";;
+2026-07-24;19:05:33;2026-07-27;2026-07-24;CHF;-79.50;;;4720.50;9930205BN1905331;"Restaurant Muster SA,1003 Lausanne";"12345678-0 07/28, Paiement carte de débit";"Référence 2222222BB2222222";;
+2026-07-24;;2026-07-24;2026-07-24;CHF;;1200.00;;4800.00;ZD81205TI0000001;"Muster Sàrl,1004 Lausanne";"Virement";"Facture 4471";;
+2026-07-20;;2026-07-20;2026-07-20;CHF;-3600.00;;;3600.00;9940201TI0000002;"Régie Muster SA,1003 Lausanne";"Ordre e-banking";"Loyer juillet";;

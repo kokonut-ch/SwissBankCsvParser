@@ -2,6 +2,181 @@
 
 ## [Unreleased](https://github.com/Kokonut-ch/SwissBankCsvParser/compare/v0.2.0...main)
 
+### Migros Bank account statements
+
+Only the card export had a profile, so a caller that restricted parsing to Migros Bank, once
+the user had named the bank, had every account statement refused. A new profile,
+`migrosbank.statement`, reads them in German, French and Italian.
+
+- **The current layout is identified confidently.** It is the one Swiss export in the
+  published samples to print a message column and a reference-number column together:
+  `Datum;Buchungstext;Mitteilung;Referenznummer;Betrag;[Saldo;]Valuta`, and its French and
+  Italian wordings. The label joins the booking text and the message; the reference number
+  reaches `Row::$reference`; the value date and the balance are read.
+- **Its preamble is read.** The period comes from `Kontoauszug von:` / `bis:` and their
+  French and Italian wordings, and a date that cannot be read leaves it `null` rather than
+  failing. The account comes from `Kontonummer / IBAN:`, which prints both on one line: the
+  IBAN when it is valid, otherwise the number. `Vertrag:` and the account designation stay
+  in `metadata`.
+- **The older four-column layout is read only once the bank is confirmed.**
+  `Datum;Buchungstext;Betrag;Valuta` is exactly what Valiant, acrevis, Schwyzer KB and
+  Nidwaldner KB print. The profile caps it at 0.25, below the generic reader's 0.30, so in
+  free detection such a file stays unidentified, and a parser restricted to Migros Bank's
+  profiles reads it.
+
+### A short table under a long preamble picks the right delimiter
+
+The delimiter was chosen on the most frequent row width alone. Migros Bank's French export
+prints seven two-cell preamble lines above a short table full of commas, decimal commas
+included, so the preamble won the count and the comma then beat the semicolon on the
+table's stray splits: the file was refused outright. Every row width is now weighed, and
+the largest block of agreeing rows wins. Across the 176 published sample files, that one
+file is the only one whose delimiter changes.
+
+### Shared vocabulary
+
+`Testo di registrazione` and `Message` are now description headings. Italian Migros Bank
+statements came back with every label empty.
+
+### The generic reader no longer reports an account designation as the holder
+
+`Bezeichnung:`, and `Description:` in French, are what the de-facto cantonal-bank preamble
+prints most often, and in every published sample the value is the kind of account:
+`Geschäftskonto`, `Kontokorrent`, `Betriebskredit`, `Compte courant CHF`. The holder's
+name sits on the unlabelled address lines below. Those labels, with `Désignation` and
+`Designazione`, no longer fill `Account::$holder`, which is now `null` for such files; the
+value is still in `metadata`. Labels that name a person (`Kontoinhaber`, `Titulaire`,
+`Intestatario`, `Account holder`) are still read.
+
+### PostFinance: no false amount, and every layout read once the bank is confirmed
+
+A caller that restricts parsing to PostFinance, once the user has named the bank, had three
+published PostFinance samples refused that the generic reader read. One more was read with
+every amount wrong, two parsed to zero rows, and one was refused by every profile. All of
+them are now read. Across the 176 published sample files, only PostFinance's change.
+
+- **The legacy profile refuses a file whose cells contradict its positions.** PostFinance's
+  2010 export, `BookingDate;BookingText;Details;ValutaDate;DebitAmount;CreditAmount;Balance`,
+  has English headings the shared vocabulary does not know, so it passed for a headerless
+  file, and `postfinance.legacy` read its `Details` flag as the credit: every row came back
+  as 2.00. A dated row with a date or text in an amount column, anything but a date in the
+  value-date column, or both a credit and a debit, now makes the profile refuse the file.
+- **A new profile, `postfinance.efinance-2010`, reads that export**, in English and in its
+  German wording (`Buchung;Buchungstext;Details;Valuta;Belastung;Gutschrift;Saldo;…`). It is
+  recognised on the camel-cased headings and on the German export's `Familienmitglied`
+  column, and requires one of them. `Details` stays in `Row::$raw`.
+- **`postfinance.efinance` reads the older account statements**, whose columns were always
+  the same: `Testo d'avviso` (2009, 2016), the 2003 wording `Descrizione della transazione`
+  / `Accreditamento` / `Debito`, `Data della valuta`, and rows dated `2016-11-14` or
+  `20090401`. `Testo d'avviso` is PostFinance's own wording and identifies the file; the 2003
+  wording is ordinary Italian and does not. A line of text without a date is no longer
+  folded into the row above: PostFinance quotes multi-line descriptions, so such a line is
+  a footer, such as the 2003 export's closing balance.
+- **`postfinance.creditcard` reads the 2022 and 2023 card exports**, dated `2023-08-24`, and
+  in Italian headed `Denominazione`. That heading alone does not name the bank: without the
+  card-account preamble or the purchase-date column, such a file scores 0.25, below the
+  generic reader, and is read as PostFinance only by a parser restricted to this bank.
+- Two samples the generic reader used to read, the 2009 and 2016 Italian statements, are
+  now identified as PostFinance. Their dates and amounts are unchanged, and their labels,
+  which the generic reader left empty, are read.
+
+### Bank Cler: the German export, once the bank is confirmed
+
+Bank Cler published a German export in July 2026,
+`Buchungsdatum;Auftragsart;Text;Belastungsbetrag (CHF);Gutschriftsbetrag (CHF);Saldo (CHF)`.
+`cler.statement` signed only on the Italian, French and English order type headings, so a
+caller that restricted parsing to Bank Cler had that file refused.
+
+- **`cler.statement` reads the German layout**, with or without `Valutadatum`. The currency
+  comes from the bracketed heading, CHF, EUR or USD, as in the other languages; texts
+  quoted over several lines make one label; `Auftragsart` is kept as an extra.
+- **It never claims that layout in free detection.** Basler Kantonalbank, Bank Cler's
+  parent, exports exactly the same headings, so nothing in the file names the bank. The
+  profile caps it at 0.25, below the generic reader's 0.30: in free detection such a file
+  stays unidentified, and a parser restricted to Bank Cler reads it.
+- The German layout needs `Belastungsbetrag` and `Gutschriftsbetrag` beside `Auftragsart`,
+  which keeps Thurgauer Kantonalbank's export (`Belastung (CHF)`, `Gutschrift (CHF)`) out.
+- Across the 176 published sample files, only that German Cler sample changes: refused
+  once the bank is confirmed, it is now read with all its rows.
+
+### Swisscard in French
+
+Swisscard added a French export in November 2026, the twelve-column layout headed
+`Date transaction,Description,Commerçant,Numéro de carte,Monnaie,Montant,…,Débit/Crédit,Statut,Catégorie de commerçant,Catégorie enregistrée`.
+No profile knew `Date transaction` or `Catégorie enregistrée`, so the file was refused,
+in free detection and with the bank confirmed alike.
+
+- **`swisscard.statement` reads it**, identified confidently on `Catégorie enregistrée`,
+  with the issuer sign flipped as in the other languages: a purchase (`Débit`) is
+  negative, a card payment (`Crédit`) positive.
+- **`Numéro de carte`, `Statut` and `Catégorie enregistrée` reach `extras`**, like
+  their German, Italian and English counterparts. The settled `Monnaie` and `Montant`
+  are read, never the foreign pair beside them.
+- **`Débit/Crédit` signs the file too**, as `Debit/Kredit` does in German, for a French
+  file without the registered category.
+- Both French headings are claimed by the Swisscard profile, not added to the shared
+  vocabulary: no other profile changes.
+- Across the 176 published sample files, only that French sample changes: refused, it is
+  now read with all its rows, in free detection and once the bank is confirmed.
+
+### Schaffhauser Kantonalbank, once the bank is confirmed
+
+Banana.ch published a sample of Schaffhauser Kantonalbank's export in October 2026. It is
+the four-column statement Migros Bank's older layout, Valiant, acrevis, Schwyzer KB,
+Nidwaldner KB and Zuger KB print too: `Kontoauszug bis:` / `Kontonummer:` / `Bezeichnung:` / `Saldo:`, then
+`Datum;Buchungstext;Betrag;Valuta`. No profile was named after the bank, so a caller that
+restricted parsing to it had nothing to restrict to.
+
+- **A new profile, `shkb.statement`, reads it** once the bank is confirmed: rows dated
+  `dd.mm.yy` (or `dd.mm.yyyy`), the signed amount, the value date, and a running balance
+  when one is printed. The preamble gives the period's end, the account number and, from
+  `Saldo: CHF …`, the currency. `Bezeichnung:` is the account's designation and stays in
+  `metadata`, never the holder.
+- **It never claims that layout in free detection.** Nothing in the file names the bank,
+  so the profile caps it at 0.25, below the generic reader's 0.30: in free detection such a
+  file stays unidentified, and a parser restricted to Schaffhauser Kantonalbank reads it. A
+  heading row with any other column is refused, even with the bank confirmed.
+- **The layout's reading is shared, not copied.** Its headings, preamble labels, date
+  notations and ceiling move to `banks/Generic/FourColumnStatement.php`, which Migros
+  Bank's statement profile now uses too. Migros Bank reads every file exactly as before.
+- Across the 176 published sample files, free detection is unchanged. The Schaffhauser KB
+  sample, read by the generic reader, is read with all its rows once the bank is
+  confirmed, dates and amounts as Banana.ch's.
+
+### Changed
+
+**UBS: what an application receives changes on four points.** The row-date rule itself
+does not change; it is now stated, with its evidence, in `banks/UBS/README.md`.
+
+- **The row date, stated.** On every UBS account layout, `Row::$date` is the booking date
+  (`Buchungsdatum`, `Date de comptabilisation`, `Data di registrazione`,
+  `Data di contabilizzazione`, `Booking date`), and the trade date only when the booking
+  date is empty, as the e-banking exports leave it on a payment UBS has not booked yet.
+  Banana.ch's import dates the two e-banking layouts by the trade date instead: in its 2022
+  sample, 126 of 195 rows differ, booked one to five days after they were made. This
+  package keeps the booking date.
+- **The trade date reaches `extras`**, as printed, under its heading as printed:
+  `['Abschlussdatum' => '2022-11-04']`. It used to be in `Row::$raw` only, so an
+  application comparing `extras` exactly now sees one more key on UBS rows. On the
+  e-banking layouts, it reproduces Banana.ch's date on every published sample row. `Date de conclusion`
+  and `Data di chiusura`, the French and Italian portfolio wordings, are recognised as the
+  trade date too: a row of such a file with an empty booking date, which no published
+  sample has, is dated by it instead of being dropped.
+- **A reversed credit is negative.** The portfolio export prints it in the credit column
+  with a minus, `-500.00` under `Gutschrift`, and the running balance falls by that amount.
+  It was read as money received; it is now money out. Debits are unchanged, always negative.
+- **A row split by an unquoted semicolon is read.** A portfolio description containing
+  ` ; ` shifted every later column one cell to the right, and the row came back with no
+  amount and its credit as the balance. Such a row is rejoined where a delimiter has a
+  space on either side, when that explains every surplus cell. `Row::$raw` then holds the
+  rejoined cells.
+- **A UBS card line without `Ecriture` no longer lends its text to the row above.** A
+  purchase not yet booked, or the balance carried over, was folded into the label of the
+  booked purchase before it. Such a line has no booking date and is not a row.
+- Across the 176 published sample files, only one reads differently: Banana.ch's 2018 UBS
+  portfolio sample, which had 1263 of its 1270 rows right (six reversed credits, one split
+  row), now has all 1270, in free detection and once the bank is confirmed.
+
 ## [v0.2.0](https://github.com/Kokonut-ch/SwissBankCsvParser/releases/tag/v0.2.0) - 2026-07-23
 
 Every profile was re-audited against the source it was derived from: the open-source import

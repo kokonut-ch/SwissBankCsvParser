@@ -1,0 +1,9 @@
+Buchungsdatum;Auftragsart;Text;Belastungsbetrag (CHF);Gutschriftsbetrag (CHF);Saldo (CHF)
+05.11.2026;QR-Rechnung;"Muster Energie AG
+Musterstrasse 1
+4051 Basel
+Pers. Ref.: Rechnung 2026-118";184.30;;5233.62
+03.11.2026;Gutschrift;"Beispiel GmbH
+Lohn Oktober 2026";;4200.00;5417.92
+31.10.2026;Kontoführungsgebühr;Kontoführungsgebühr;2.00;;1217.92
+

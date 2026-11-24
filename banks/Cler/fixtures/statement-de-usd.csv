@@ -1,0 +1,6 @@
+Buchungsdatum;Valutadatum;Auftragsart;Text;Belastungsbetrag (USD);Gutschriftsbetrag (USD);Saldo (USD)
+12.11.2026;12.11.2026;Zahlung ins Ausland;"Example Supplies Inc
+100 Sample Street
+Springfield
+Invoice 2026-0042";1250.00;;8750.00
+10.11.2026;11.11.2026;Gutschrift;Muster Trading AG;;10000.00;10000.00

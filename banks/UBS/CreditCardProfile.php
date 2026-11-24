@@ -14,7 +14,7 @@ use Kokonut\SwissBankCsvParser\Profiles\HeaderDrivenProfile;
  *
  * Two dates per row, as card statements always have: the purchase date and the
  * date the issuer booked it. UBS calls the latter simply "Ecriture", which is
- * why the booking date has to be named explicitly here — no shared vocabulary
+ * why the booking date has to be named explicitly here: no shared vocabulary
  * would guess that.
  *
  * The row also carries the amount three times over: in the original currency,
@@ -60,5 +60,19 @@ final class CreditCardProfile extends HeaderDrivenProfile
     protected function requiresSignature(): bool
     {
         return true;
+    }
+
+    /**
+     * Off: a line without "Ecriture" is never the rest of the line above.
+     *
+     * It is either the balance carried from the previous statement or a
+     * purchase the issuer has not booked yet, which prints its text and its
+     * original amount but no debit, no credit and no booking date. Folded in,
+     * the purchase's text ended up in the label of whichever booked purchase
+     * preceded it. Such a line has no booking date, so it is not a row.
+     */
+    protected function allowsContinuationRows(): bool
+    {
+        return false;
     }
 }

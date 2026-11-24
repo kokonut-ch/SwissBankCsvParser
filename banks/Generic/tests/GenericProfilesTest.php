@@ -73,8 +73,8 @@ it('never sounds confident', function () {
 });
 
 it('reads the header block of banks it cannot name', function () {
-    // Migros Bank and Valiant ship an export that is indistinguishable from one
-    // another's — same preamble, same four columns, same wording. Neither can
+    // Valiant, acrevis and Migros Bank's older layout are indistinguishable from
+    // one another: same preamble, same four columns, same wording. None can
     // honestly be claimed, so the generic reader picks up what the preamble says
     // and leaves the bank unidentified.
     $csv = <<<'CSV'
@@ -95,7 +95,10 @@ it('reads the header block of banks it cannot name', function () {
         ->and($file->account->number)->toBe('543.278.22')
         // "Saldo: CHF 38547.70" — the ISO code is picked out of the value.
         ->and($file->account->currency)->toBe('CHF')
-        ->and($file->account->holder)->toBe('Privat')
+        // "Bezeichnung" names the kind of account, not who holds it: it stays
+        // in the metadata and is never reported as the holder.
+        ->and($file->account->holder)->toBeNull()
+        ->and($file->metadata['Bezeichnung'] ?? null)->toBe('Privat')
         ->and($file)->toHaveCount(2)
         ->and($file->rows[0]->amount)->toBe('1838.00')
         ->and($file->rows[1]->amount)->toBe('-204.45');

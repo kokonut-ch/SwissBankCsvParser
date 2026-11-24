@@ -1,0 +1,17 @@
+Kontoauszug bis: 30.09.2026 ;;;
+;;;
+Kontonummer: 123.456-7 890;;;
+Bezeichnung: Kontokorrent BUSINESS CHF;;;
+Saldo: CHF 8450.35;;;
+;;;
+Muster AG;;;
+Beispielstrasse 4;;;
+8200 Schaffhausen;;;
+;;;
+;;;
+Datum;Buchungstext;Betrag;Valuta
+30.09.26;Kontoführungsgebühr;-12.00;30.09.26
+29.09.26;Zahlungseingang Beispiel GmbH, Rechnung 2026-117;4250.00;29.09.26
+29.09.26;Dauerauftrag Miete Geschäftsräume;-2799.60;29.09.26
+28.09.26;Kartenzahlung Muster Laden, Schaffhausen;-54.95;25.09.26
+24.09.26;Lastschrift Versicherung Beispiel AG;-42.00;22.09.26
