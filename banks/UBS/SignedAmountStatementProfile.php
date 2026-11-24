@@ -19,12 +19,13 @@ use Kokonut\SwissBankCsvParser\Profiles\HeaderDrivenProfile;
  * already on the amount, and reading both would be a way to disagree with
  * oneself.
  *
- * The two profiles cannot both match a file — one needs a debit and a credit
+ * The two profiles cannot both match a file: one needs a debit and a credit
  * column, the other an amount column, and no UBS export has all three.
  */
 final class SignedAmountStatementProfile extends HeaderDrivenProfile
 {
     use Signatures;
+    use StatementRows;
 
     public function identity(): BankIdentity
     {
@@ -55,7 +56,7 @@ final class SignedAmountStatementProfile extends HeaderDrivenProfile
     {
         return [
             Term::Description->value => Lexicon::numbered(['Description', 'Beschreibung', 'Descrizione']),
-            Term::BookingDate->value => self::BOOKING_DATE_LABELS,
+            Term::BookingDate->value => self::ROW_DATE_HEADINGS,
         ];
     }
 

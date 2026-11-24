@@ -1,0 +1,7 @@
+sep=;
+Numéro de compte;Numéro de carte;Titulaire de compte/carte;Date d'achat;Texte comptable;Secteur;Montant;Monnaie originale;Cours;Monnaie;Débit;Crédit;Ecriture
+ZZZZ ZZZZ ZZZZ;;JEAN MUSTER;19.10.2026;Report de solde;;;;;CHF;;0.00;
+ZZZZ ZZZZ ZZZZ;XXXX XXXX XXXX 0001;JEAN MUSTER;16.11.2026;Hotel Muster Bern CHE;Hotels;119.40;CHF;;;;;
+ZZZZ ZZZZ ZZZZ;XXXX XXXX XXXX 0001;JEAN MUSTER;13.11.2026;www.example.ch            LUGANO       CHE;Magasin d ordinateurs;189.00;CHF;;CHF;189.00;;15.11.2026
+ZZZZ ZZZZ ZZZZ;XXXX XXXX XXXX 0001;JEAN MUSTER;14.11.2026;Musée Muster Genève CHE;Loisirs;12.00;CHF;;;;;
+ZZZZ ZZZZ ZZZZ;XXXX XXXX XXXX 0001;JEAN MUSTER;27.10.2026;Example Store London GBR;Magasin d ordinateurs;13.90;GBP;1.2000;CHF;16.68;;30.10.2026

@@ -119,6 +119,40 @@ in free detection and with the bank confirmed alike.
 - Across the 176 published sample files, only that French sample changes: refused, it is
   now read with all its rows, in free detection and once the bank is confirmed.
 
+### Changed
+
+**UBS: what an application receives changes on four points.** The row-date rule itself
+does not change; it is now stated, with its evidence, in `banks/UBS/README.md`.
+
+- **The row date, stated.** On every UBS account layout, `Row::$date` is the booking date
+  (`Buchungsdatum`, `Date de comptabilisation`, `Data di registrazione`,
+  `Data di contabilizzazione`, `Booking date`), and the trade date only when the booking
+  date is empty, as the e-banking exports leave it on a payment UBS has not booked yet.
+  Banana.ch's import dates the two e-banking layouts by the trade date instead: in its 2022
+  sample, 126 of 195 rows differ, booked one to five days after they were made. This
+  package keeps the booking date.
+- **The trade date reaches `extras`**, as printed, under its heading as printed:
+  `['Abschlussdatum' => '2022-11-04']`. It used to be in `Row::$raw` only, so an
+  application comparing `extras` exactly now sees one more key on UBS rows. On the
+  e-banking layouts, it reproduces Banana.ch's date on every published sample row. `Date de conclusion`
+  and `Data di chiusura`, the French and Italian portfolio wordings, are recognised as the
+  trade date too: a row of such a file with an empty booking date, which no published
+  sample has, is dated by it instead of being dropped.
+- **A reversed credit is negative.** The portfolio export prints it in the credit column
+  with a minus, `-500.00` under `Gutschrift`, and the running balance falls by that amount.
+  It was read as money received; it is now money out. Debits are unchanged, always negative.
+- **A row split by an unquoted semicolon is read.** A portfolio description containing
+  ` ; ` shifted every later column one cell to the right, and the row came back with no
+  amount and its credit as the balance. Such a row is rejoined where a delimiter has a
+  space on either side, when that explains every surplus cell. `Row::$raw` then holds the
+  rejoined cells.
+- **A UBS card line without `Ecriture` no longer lends its text to the row above.** A
+  purchase not yet booked, or the balance carried over, was folded into the label of the
+  booked purchase before it. Such a line has no booking date and is not a row.
+- Across the 176 published sample files, only one reads differently: Banana.ch's 2018 UBS
+  portfolio sample, which had 1263 of its 1270 rows right (six reversed credits, one split
+  row), now has all 1270, in free detection and once the bank is confirmed.
+
 ## [v0.2.0](https://github.com/Kokonut-ch/SwissBankCsvParser/releases/tag/v0.2.0) - 2026-07-23
 
 Every profile was re-audited against the source it was derived from: the open-source import
