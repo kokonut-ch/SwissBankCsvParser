@@ -5,6 +5,7 @@ One directory per bank. Each holds everything about that bank and nothing about 
 ```
 banks/PostFinance/
 ├── EFinanceProfile.php        one class per recognisable export format
+├── EFinance2010Profile.php
 ├── CreditCardProfile.php
 ├── LegacyStatementProfile.php
 ├── fixtures/                  synthetic sample files

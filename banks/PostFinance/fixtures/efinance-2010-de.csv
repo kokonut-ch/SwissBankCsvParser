@@ -1,0 +1,8 @@
+Buchung;Buchungstext;Details;Valuta;Belastung;Gutschrift;Saldo;Kategorie;Familienmitglied;Kommentar
+"31.12.2013";"ZINSABSCHLUSS 010113 - 311213";"";"31.12.2013";"-0.15";"";"2549.30";"";"";""
+"24.12.2013";"KAUF/DIENSTLEISTUNG
+VOM 23.12.2013
+KARTEN NR. 00000001
+MUSTER LADEN AG
+BERN";"1";"23.12.2013";"-124.00";"";"2549.45";"Haushalt";"";""
+"20.12.2013";"GUTSCHRIFT MUSTER AG";"1";"20.12.2013";"";"2500.00";"2673.45";"Lohn";"";"Dezember"

@@ -89,3 +89,36 @@ it('does not claim an account statement', function () {
 
     expect(postFinanceCardParser()->supports($csv))->toBeFalse();
 });
+
+it('reads the single-date export of 2023, dated in ISO notation', function () {
+    $file = postFinanceCardParser()->parse(postFinanceCardFixture('creditcard-de-2023.csv'));
+
+    expect($file->account->number)->toBe('0000 0000 0000 0001')
+        ->and($file->account->currency)->toBe('CHF')
+        ->and($file)->toHaveCount(2)
+        ->and($file->rows[0]->date->format('Y-m-d'))->toBe('2023-08-24')
+        ->and($file->rows[0]->valueDate)->toBeNull()
+        ->and($file->rows[0]->amount)->toBe('-94.70')
+        ->and($file->rows[1]->amount)->toBe('80.00');
+});
+
+it('reads the Italian export of 2022, whose debits are printed positive', function () {
+    $file = postFinanceCardParser()->parse(postFinanceCardFixture('creditcard-it-2022.csv'));
+
+    expect($file->account->number)->toBe('0000 0000 0000 0001')
+        ->and($file->account->currency)->toBe('CHF')
+        ->and(array_map(fn (Row $row) => $row->label, $file->rows))
+        ->toBe(['NEGOZIO ESEMPIO 00000000001 CHE', "1.7% SUPPL. CHF ALL'ESTERO", 'PAGAMENTO CARTA DI CREDITO', 'Totale'])
+        ->and(array_map(fn (Row $row) => $row->amount, $file->rows))->toBe(['-52.00', '-0.88', '300.00', null]);
+});
+
+it('leaves an unsigned Denominazione file to the generic reader', function () {
+    // Without its card-account preamble, nothing in this file names the bank:
+    // "Denominazione" is what any Italian export may call a description.
+    $csv = "Data;Denominazione;Accredito in CHF;Addebito in CHF\n"
+        ."2022-05-04;Negozio;;52.00\n";
+
+    expect(postFinanceCardParser()->detect($csv)->best()?->score)->toBeLessThan(0.30)
+        ->and(postFinanceCardParser()->parse($csv)->rows[0]->amount)->toBe('-52.00')
+        ->and((new SwissBankCsvParser)->detect($csv)->best()?->profile)->toBe('generic.split-columns');
+});

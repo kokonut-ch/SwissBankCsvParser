@@ -1,0 +1,15 @@
+
+
+Numero cliente: ;100001
+Intestazione del conto: ;Esempio Sagl
+Via Esempio 1
+6900 Lugano
+Periodo: ;01.09.2003; al ;03.09.2003
+
+Data;Descrizione della transazione;Accreditamento;Debito;Valuta;Saldo
+31.08.2003;Saldo;;;;50078.40
+01.09.2003;"ORDINE COLLETTIVO N. 5,CONTO 100001";;-28.60;01.09.2003;50049.80
+01.09.2003;"ACCREDITO DEBIT DIRECT,CLIENTE 501405";26.80;;01.09.2003;50076.60
+03.09.2003;"VERSAMENTO 25-1026-4,ESEMPIO SAGL";100.00;;03.09.2003;50176.60
+
+Saldo al 03.09.2003;CHF 50176.60

@@ -1,0 +1,11 @@
+Conto della carta:;0000 0000 0000 0001
+Carta:;XXXX XXXX XXXX 0001 PostFinance Visa Card
+Periodo contabile:;06.04.2022 - 05.05.2022
+Data;Denominazione;Accredito in CHF;Addebito in CHF;Importo in CHF
+2022-05-04;"NEGOZIO ESEMPIO      00000000001  CHE";;52.00;
+2022-05-04;"1.7% SUPPL. CHF ALL'ESTERO";;0.88;
+2022-05-02;"PAGAMENTO CARTA DI CREDITO";300.00;;
+2022-05-05;Totale;;;247.12
+
+Avvertenza:
+Il contenuto del documento è stato generato in base alle impostazioni del filtro.

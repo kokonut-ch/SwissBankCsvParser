@@ -186,7 +186,7 @@ spreadsheet-formula injection into someone else's machine.
 
 | Bank | Formats | Verified against a real export |
 | --- | --- | --- |
-| PostFinance | e-finance account statement (2024+), credit card statement, legacy headerless statement | ✅ |
+| PostFinance | e-finance account statement (2024+, and its older layouts back to 2003), credit card statement (2022+), legacy headerless statement | ✅ |
 | UBS | account statement (split debit/credit), e-banking statement (signed amount), credit card statement | ✅ |
 | Raiffeisen | account statement, legacy statement | ✅ |
 | Zürcher Kantonalbank | account statement | ⬜ |

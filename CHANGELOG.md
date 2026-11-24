@@ -48,6 +48,38 @@ name sits on the unlabelled address lines below. Those labels, with `Désignatio
 value is still in `metadata`. Labels that name a person (`Kontoinhaber`, `Titulaire`,
 `Intestatario`, `Account holder`) are still read.
 
+### PostFinance: no false amount, and every layout read once the bank is confirmed
+
+A caller that restricts parsing to PostFinance, once the user has named the bank, had three
+published PostFinance samples refused that the generic reader read. One more was read with
+every amount wrong, two parsed to zero rows, and one was refused by every profile. All of
+them are now read. Across the 176 published sample files, only PostFinance's change.
+
+- **The legacy profile refuses a file whose cells contradict its positions.** PostFinance's
+  2010 export, `BookingDate;BookingText;Details;ValutaDate;DebitAmount;CreditAmount;Balance`,
+  has English headings the shared vocabulary does not know, so it passed for a headerless
+  file, and `postfinance.legacy` read its `Details` flag as the credit: every row came back
+  as 2.00. A dated row with a date or text in an amount column, anything but a date in the
+  value-date column, or both a credit and a debit, now makes the profile refuse the file.
+- **A new profile, `postfinance.efinance-2010`, reads that export**, in English and in its
+  German wording (`Buchung;Buchungstext;Details;Valuta;Belastung;Gutschrift;Saldo;…`). It is
+  recognised on the camel-cased headings and on the German export's `Familienmitglied`
+  column, and requires one of them. `Details` stays in `Row::$raw`.
+- **`postfinance.efinance` reads the older account statements**, whose columns were always
+  the same: `Testo d'avviso` (2009, 2016), the 2003 wording `Descrizione della transazione`
+  / `Accreditamento` / `Debito`, `Data della valuta`, and rows dated `2016-11-14` or
+  `20090401`. `Testo d'avviso` is PostFinance's own wording and identifies the file; the 2003
+  wording is ordinary Italian and does not. A line of text without a date is no longer
+  folded into the row above: PostFinance quotes multi-line descriptions, so such a line is
+  a footer, such as the 2003 export's closing balance.
+- **`postfinance.creditcard` reads the 2022 and 2023 card exports**, dated `2023-08-24`, and
+  in Italian headed `Denominazione`. That heading alone does not name the bank: without the
+  card-account preamble or the purchase-date column, such a file scores 0.25, below the
+  generic reader, and is read as PostFinance only by a parser restricted to this bank.
+- Two samples the generic reader used to read, the 2009 and 2016 Italian statements, are
+  now identified as PostFinance. Their dates and amounts are unchanged, and their labels,
+  which the generic reader left empty, are read.
+
 ## [v0.2.0](https://github.com/Kokonut-ch/SwissBankCsvParser/releases/tag/v0.2.0) - 2026-07-23
 
 Every profile was re-audited against the source it was derived from: the open-source import
