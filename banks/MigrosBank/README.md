@@ -103,7 +103,10 @@ Datum;Buchungstext;Betrag;Valuta
 
 **Valiant, acrevis, Schwyzer KB and Nidwaldner KB print exactly the same thing**: the
 same preamble labels, the same four columns, the same wording, the same dates. Nothing in
-the file says which bank produced it.
+the file says which bank produced it. Schaffhauser Kantonalbank does too, and its profile,
+`shkb.statement`, reads the layout the same way: both take its headings, preamble labels,
+date notations and ceiling from
+[`banks/Generic/FourColumnStatement.php`](../Generic/FourColumnStatement.php).
 
 So the profile reads this layout but never claims it. Its score is capped at 0.25,
 below the generic reader's 0.30: in free detection the file stays with the generic

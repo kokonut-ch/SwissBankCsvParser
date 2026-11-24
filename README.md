@@ -193,6 +193,7 @@ spreadsheet-formula injection into someone else's machine.
 | Banque Cantonale Vaudoise | account statement | ⬜ |
 | Berner Kantonalbank | account statement | ⬜ |
 | Banca dello Stato del Cantone Ticino | account statement | ⬜ |
+| Schaffhauser Kantonalbank | account statement (once the bank is confirmed) | ⬜ |
 | Bank Cler | account statement (its German layout once the bank is confirmed) | ⬜ |
 | Cornèr Banca | account statement | ⬜ |
 | Yuh | account statement | ⬜ |
@@ -225,18 +226,19 @@ and for those the generic reader is the correct answer rather than a stopgap.
 
 **There is, in practice, one de-facto Swiss cantonal-bank format.** A preamble of
 `Kontonummer:` / `Bezeichnung:` / `Saldo: CHF …`, then `Datum;Buchungstext;Betrag;Valuta`.
-Valiant, Nidwaldner KB, Schwyzer KB, acrevis, Zuger KB and Migros Bank's older layout all
-ship it, and nothing in any of those files says which one you are holding. A profile
-claiming that shape for one bank would attribute the others' statements to it while
-sounding certain. The generic reader takes them instead, reads the preamble for the account
+Valiant, Nidwaldner KB, Schwyzer KB, acrevis, Zuger KB, Schaffhauser KB and Migros Bank's
+older layout all ship it, and nothing in any of those files says which one you are
+holding. A profile claiming that shape for one bank would attribute the others' statements
+to it while sounding certain. The generic reader takes them instead, reads the preamble for the account
 number and currency, and reports the bank as unknown. The `Bezeichnung:` line names the
 kind of account ("Geschäftskonto", "Compte courant"), not its holder, and stays in
 `metadata`.
 
-Migros Bank's statement profile still reads that layout, but scores it below the generic
-reader: it is read as Migros Bank only when the caller restricts the parser to that bank's
-profiles, typically once the person who uploaded the file has named it. See
-[`banks/MigrosBank/README.md`](banks/MigrosBank/README.md). Bank Cler's German export is
+Migros Bank's and Schaffhauser Kantonalbank's statement profiles still read that layout,
+but score it below the generic reader: it is read as one of those banks only when the
+caller restricts the parser to that bank's profiles, typically once the person who uploaded
+the file has named it. See [`banks/MigrosBank/README.md`](banks/MigrosBank/README.md) and
+[`banks/SHKB/README.md`](banks/SHKB/README.md). Bank Cler's German export is
 treated the same way, because it is heading for heading what Basler Kantonalbank exports:
 see [`banks/Cler/README.md`](banks/Cler/README.md).
 

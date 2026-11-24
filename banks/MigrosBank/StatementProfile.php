@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Kokonut\SwissBankCsvParser\Banks\MigrosBank;
 
+use Kokonut\SwissBankCsvParser\Banks\Generic\FourColumnStatement;
 use Kokonut\SwissBankCsvParser\Csv\CsvDocument;
 use Kokonut\SwissBankCsvParser\Csv\Text;
-use Kokonut\SwissBankCsvParser\Detection\DetectionReport;
 use Kokonut\SwissBankCsvParser\Dto\Account;
 use Kokonut\SwissBankCsvParser\Dto\BankIdentity;
 use Kokonut\SwissBankCsvParser\Dto\ParsedFile;
@@ -34,11 +34,14 @@ use Kokonut\SwissBankCsvParser\Value\Iban;
  *
  * The older one is four columns, `Datum;Buchungstext;Betrag;Valuta`, under a
  * `Kontonummer:` / `Bezeichnung:` / `Saldo:` preamble. Valiant, acrevis,
- * Schwyzer KB and Nidwaldner KB print exactly the same thing, so nothing in the
- * file says Migros Bank. That layout is matched, so that a caller who already
- * knows the bank can read it, but always below the generic reader: in free
- * detection it stays a file whose bank has to be named, and it is read as
- * Migros Bank only when the caller restricts the parser to this bank.
+ * Schwyzer KB, Nidwaldner KB and Schaffhauser KB print exactly the same thing,
+ * so nothing in the file says Migros Bank. That layout is matched, so that a
+ * caller who already knows the bank can read it, but always below the generic
+ * reader: in free detection it stays a file whose bank has to be named, and it
+ * is read as Migros Bank only when the caller restricts the parser to this
+ * bank. Its headings, its preamble and its ceiling are
+ * {@see FourColumnStatement}'s, which this profile extends with the current
+ * layout's and the other languages'.
  *
  * In both layouts the `Bezeichnung` line of the preamble is the account's
  * designation ("Privatkonto", "Compte courant"), not its holder. It stays in
@@ -46,13 +49,6 @@ use Kokonut\SwissBankCsvParser\Value\Iban;
  */
 final class StatementProfile extends HeaderDrivenProfile
 {
-    /**
-     * The four-column layout's ceiling. Below the generic reader's 0.30 on
-     * purpose, so it can never win a free detection, and far below
-     * {@see DetectionReport::isConfident()}.
-     */
-    private const float SHARED_LAYOUT_SCORE = 0.25;
-
     /**
      * The message column, in the three languages of the current layout.
      *
@@ -87,7 +83,7 @@ final class StatementProfile extends HeaderDrivenProfile
      */
     protected function dateFormats(): array
     {
-        return ['d.m.Y', 'd.m.y', 'Y-m-d'];
+        return [...FourColumnStatement::DATE_FORMATS, 'Y-m-d'];
     }
 
     protected function optionalTerms(): array
@@ -99,19 +95,26 @@ final class StatementProfile extends HeaderDrivenProfile
      * Narrowed to the bank's own headings, so that the profile does not read
      * every signed-amount export in the country.
      *
-     * The message columns are listed after the booking texts, which is what
-     * puts the booking text first in the label whatever the column order.
+     * The four-column layout's German headings come first, then the other
+     * languages'. The message columns are listed after the booking texts,
+     * which is what puts the booking text first in the label whatever the
+     * column order.
      */
     protected function termLabels(): array
     {
+        $layout = FourColumnStatement::termLabels();
+
         return [
-            Term::BookingDate->value => ['Datum', 'Data', 'Date'],
-            Term::Description->value => ['Buchungstext', 'Testo di registrazione', 'Libellé', ...self::MESSAGE_HEADINGS],
-            Term::Amount->value => ['Betrag', 'Importo', 'Montant'],
+            Term::BookingDate->value => [...$layout[Term::BookingDate->value], 'Data', 'Date'],
+            Term::Description->value => [
+                ...$layout[Term::Description->value],
+                'Testo di registrazione', 'Libellé', ...self::MESSAGE_HEADINGS,
+            ],
+            Term::Amount->value => [...$layout[Term::Amount->value], 'Importo', 'Montant'],
             // "Valuta" is the value date here, in Italian too.
-            Term::ValueDate->value => ['Valuta', 'Valeur'],
+            Term::ValueDate->value => [...$layout[Term::ValueDate->value], 'Valeur'],
             Term::Reference->value => ['Referenznummer', 'Numero di riferimento', 'Numéro de référence'],
-            Term::Balance->value => ['Saldo', 'Solde'],
+            Term::Balance->value => [...$layout[Term::Balance->value], 'Solde'],
         ];
     }
 
@@ -129,17 +132,19 @@ final class StatementProfile extends HeaderDrivenProfile
      */
     protected function headerBlock(): HeaderBlock
     {
+        $layout = FourColumnStatement::headerBlock();
+
         return new HeaderBlock(
             account: [
-                'Kontonummer / IBAN', 'Kontonummer',
+                'Kontonummer / IBAN', ...$layout->account,
                 'Numéro de compte / IBAN', 'Numéro de compte',
                 'Numero di conto / IBAN', 'Numero di conto',
             ],
             // "Saldo: CHF 38547.70" in the older layout. The current one prints
             // the label with an empty value, and then the file names no currency.
-            currency: ['Saldo', 'Solde'],
+            currency: [...$layout->currency, 'Solde'],
             from: ['Kontoauszug von', 'Relevé de compte de', 'Estratto conto da'],
-            to: ['Kontoauszug bis', "Relevé de compte jusqu'au", 'Estratto conto fino'],
+            to: [...$layout->to, "Relevé de compte jusqu'au", 'Estratto conto fino'],
         );
     }
 
@@ -156,14 +161,7 @@ final class StatementProfile extends HeaderDrivenProfile
             return $match;
         }
 
-        return new ProfileMatch(
-            min($match->score, self::SHARED_LAYOUT_SCORE),
-            [
-                ...$match->reasons,
-                'four-column layout shared with Valiant, acrevis, Schwyzer KB and Nidwaldner KB: the bank is not named',
-            ],
-            $match->columns,
-        );
+        return FourColumnStatement::cap($match, 'Valiant, acrevis, Schwyzer KB and Nidwaldner KB');
     }
 
     /**

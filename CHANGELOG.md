@@ -119,6 +119,30 @@ in free detection and with the bank confirmed alike.
 - Across the 176 published sample files, only that French sample changes: refused, it is
   now read with all its rows, in free detection and once the bank is confirmed.
 
+### Schaffhauser Kantonalbank, once the bank is confirmed
+
+Banana.ch published a sample of Schaffhauser Kantonalbank's export in October 2026. It is
+the four-column statement Migros Bank's older layout, Valiant, acrevis, Schwyzer KB,
+Nidwaldner KB and Zuger KB print too: `Kontoauszug bis:` / `Kontonummer:` / `Bezeichnung:` / `Saldo:`, then
+`Datum;Buchungstext;Betrag;Valuta`. No profile was named after the bank, so a caller that
+restricted parsing to it had nothing to restrict to.
+
+- **A new profile, `shkb.statement`, reads it** once the bank is confirmed: rows dated
+  `dd.mm.yy` (or `dd.mm.yyyy`), the signed amount, the value date, and a running balance
+  when one is printed. The preamble gives the period's end, the account number and, from
+  `Saldo: CHF …`, the currency. `Bezeichnung:` is the account's designation and stays in
+  `metadata`, never the holder.
+- **It never claims that layout in free detection.** Nothing in the file names the bank,
+  so the profile caps it at 0.25, below the generic reader's 0.30: in free detection such a
+  file stays unidentified, and a parser restricted to Schaffhauser Kantonalbank reads it. A
+  heading row with any other column is refused, even with the bank confirmed.
+- **The layout's reading is shared, not copied.** Its headings, preamble labels, date
+  notations and ceiling move to `banks/Generic/FourColumnStatement.php`, which Migros
+  Bank's statement profile now uses too. Migros Bank reads every file exactly as before.
+- Across the 176 published sample files, free detection is unchanged. The Schaffhauser KB
+  sample, read by the generic reader, is read with all its rows once the bank is
+  confirmed, dates and amounts as Banana.ch's.
+
 ### Changed
 
 **UBS: what an application receives changes on four points.** The row-date rule itself
